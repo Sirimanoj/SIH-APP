@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { Bot, BookOpen, Users } from 'lucide-react';
+import { Bot, BookOpen, Users, CalendarCheck } from 'lucide-react';
 import {
   Card,
   CardContent,
@@ -16,7 +16,7 @@ const actions = [
     href: '/chatbot',
     icon: Bot,
     title: 'AI Chatbot',
-    description: 'Talk about what\'s on your mind.',
+    description: "Talk about what's on your mind.",
     color: 'bg-primary/10 text-primary',
   },
   {
@@ -32,6 +32,13 @@ const actions = [
     title: 'Community',
     description: 'Connect with your peers.',
     color: 'bg-orange-100 text-orange-600',
+  },
+  {
+    href: '/book-session',
+    icon: CalendarCheck,
+    title: 'Book a Session',
+    description: 'Schedule a confidential appointment.',
+    color: 'bg-blue-100 text-blue-600',
   },
 ];
 
