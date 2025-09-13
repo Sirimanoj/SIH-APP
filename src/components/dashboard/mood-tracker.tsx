@@ -21,7 +21,7 @@ import { Button } from '@/components/ui/button';
 import { ChartTooltipContent, ChartContainer, ChartTooltip } from '@/components/ui/chart';
 import { db } from '@/lib/firebase';
 import { collection, addDoc, serverTimestamp, query, where, orderBy, limit, onSnapshot } from 'firebase/firestore';
-import { format, subDays } from 'date-fns';
+import { format, subDays, startOfDay, endOfDay } from 'date-fns';
 
 const moods = [
   { level: 1, icon: Annoyed, label: 'Awful', color: 'text-red-500' },
@@ -38,7 +38,6 @@ const chartConfig = {
   },
 };
 
-// A placeholder user ID. Replace with actual user ID after implementing auth.
 const USER_ID = "anonymous_user"; 
 
 export default function MoodTracker() {
@@ -47,14 +46,19 @@ export default function MoodTracker() {
 
   useEffect(() => {
     const today = new Date();
-    const lastSevenDays = Array.from({ length: 7 }).map((_, i) => format(subDays(today, i), 'E'));
+    const lastSevenDays = Array.from({ length: 7 }).map((_, i) => {
+        const date = subDays(today, i);
+        return {
+            date,
+            day: format(date, 'MMM d'),
+        };
+    });
     
     const moodQuery = query(
       collection(db, "moods"),
       where("userId", "==", USER_ID),
-      where("timestamp", ">=", subDays(new Date(), 7)),
-      orderBy("timestamp", "desc"),
-      limit(7)
+      where("timestamp", ">=", startOfDay(subDays(today, 6))),
+      orderBy("timestamp", "desc")
     );
 
     const unsubscribe = onSnapshot(moodQuery, (querySnapshot) => {
@@ -62,18 +66,25 @@ export default function MoodTracker() {
       
       querySnapshot.forEach((doc) => {
         const data = doc.data();
-        const day = format(data.timestamp.toDate(), 'E');
+        const day = format(data.timestamp.toDate(), 'MMM d');
         if (!dailyMoods.has(day)) {
             dailyMoods.set(day, data.moodLevel);
         }
       });
 
-      const chartData = lastSevenDays.reverse().map(day => ({
-          day,
-          mood: dailyMoods.get(day) || 0, // Use 0 if no mood was logged for that day
+      const chartData = lastSevenDays.reverse().map(d => ({
+          day: d.day,
+          mood: dailyMoods.get(d.day) || 0,
       }));
 
       setMoodData(chartData);
+
+      const todayStr = format(today, 'MMM d');
+      if (dailyMoods.has(todayStr)) {
+        setSelectedMood(dailyMoods.get(todayStr) as number);
+      } else {
+        setSelectedMood(null);
+      }
     });
 
     // Cleanup subscription on unmount
@@ -88,10 +99,8 @@ export default function MoodTracker() {
         moodLevel: moodLevel,
         timestamp: serverTimestamp(),
       });
-      // Optionally show a success toast
     } catch (error) {
       console.error("Error adding document: ", error);
-      // Optionally show an error toast
     }
   };
 
@@ -142,10 +151,14 @@ export default function MoodTracker() {
                       cursor={false}
                       content={<ChartTooltipContent 
                           labelFormatter={(label, payload) => {
-                             if (payload && payload.length > 0 && payload[0].value > 0) {
-                                return `${payload[0]?.payload.day}: ${moods.find(m => m.level === payload[0]?.value)?.label}`
+                             if (payload && payload.length > 0) {
+                               const dayPayload = payload[0].payload;
+                               if(dayPayload.mood > 0) {
+                                return `${dayPayload.day}: ${moods.find(m => m.level === dayPayload.mood)?.label}`
+                               }
+                               return `${dayPayload.day}: No entry`;
                              }
-                             return `${payload[0]?.payload.day}: No entry`;
+                             return label;
                           }}
                           indicator="dot"
                       />}
