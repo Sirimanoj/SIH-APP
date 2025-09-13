@@ -4,20 +4,14 @@ import { detectCrisis } from '@/ai/flows/chatbot-crisis-detection';
 import { getGuidedExercise } from '@/ai/flows/chatbot-guided-exercise';
 import { chatbotResourceRecommendation } from '@/ai/flows/chatbot-resource-recommendation';
 import { summarizeConversationSentiment } from '@/ai/flows/summarize-conversation-sentiment';
-
-const genericResponses = [
-  "I understand. Could you tell me more about that?",
-  "Thank you for sharing. How did that make you feel?",
-  "That sounds challenging. I'm here to listen.",
-  "I see. Let's explore that a bit more.",
-  "It takes courage to talk about this. I appreciate you trusting me."
-];
+import { getChatbotResponse } from '@/ai/flows/chatbot-conversation';
 
 export async function handleChatMessage(message: string, conversationHistory: string): Promise<{ response: string, isCrisis: boolean }> {
   try {
     const fullConversation = `${conversationHistory}\nUser: ${message}`;
-    const crisisResult = await detectCrisis({ conversationText: fullConversation });
     
+    // 1. Always check for crisis first
+    const crisisResult = await detectCrisis({ conversationText: fullConversation });
     if (crisisResult.isCrisis) {
       return {
         response: crisisResult.suggestedResponse,
@@ -25,8 +19,8 @@ export async function handleChatMessage(message: string, conversationHistory: st
       };
     }
     
-    // Check if the user is asking for an exercise
-    if (message.toLowerCase().includes('exercise') || message.toLowerCase().includes('breathing') || message.toLowerCase().includes('mindfulness')) {
+    // 2. Determine user intent
+    if (message.toLowerCase().match(/exercise|breathing|mindfulness|meditation/)) {
       const exerciseResult = await getGuidedExercise({ topic: message });
       return {
         response: exerciseResult.exercise,
@@ -34,30 +28,35 @@ export async function handleChatMessage(message: string, conversationHistory: st
       };
     }
 
-    // Check if user is asking for resources
-    if (message.toLowerCase().includes('resources') || message.toLowerCase().includes('help') || message.toLowerCase().includes('articles')) {
+    if (message.toLowerCase().match(/resources|help|articles|videos|support/)) {
        const resourceResult = await chatbotResourceRecommendation({ conversationHistory: fullConversation, userConcerns: message });
        const recommendations = resourceResult.recommendedResources.join('\n- ');
        return {
-         response: `Here are some resources that might be helpful:\n- ${recommendations}\n\n${resourceResult.reasoning}`,
+         response: `Based on our conversation, here are some resources that might be helpful:\n- ${recommendations}\n\n${resourceResult.reasoning}`,
          isCrisis: false,
        }
     }
     
-    // If not a crisis or specific request, return a generic, supportive response for this simulation.
-    // In a real app, you would use another AI flow for conversational responses.
-    const randomResponse = genericResponses[Math.floor(Math.random() * genericResponses.length)];
+    // 3. If no specific intent, have a natural conversation
+    const conversationalResult = await getChatbotResponse({ conversationHistory: fullConversation });
+
+    // 4. In the background, check sentiment for potential escalation
+    summarizeConversationSentiment({ conversationText: fullConversation }).then(sentimentResult => {
+        if(sentimentResult.escalationNeeded) {
+            // In a real app, you might trigger a notification to a counselor here.
+            console.log("Escalation needed for this conversation.");
+        }
+    });
     
     return {
-      response: randomResponse,
+      response: conversationalResult.response,
       isCrisis: false,
     };
 
   } catch (error) {
     console.error("Error handling chat message:", error);
-    // Return a generic error message to the user
     return {
-      response: "I'm sorry, I encountered an error. Please try again or contact support if the problem persists.",
+      response: "I'm sorry, I encountered an error. Please try again or contact a counselor if you need immediate help.",
       isCrisis: false,
     };
   }
