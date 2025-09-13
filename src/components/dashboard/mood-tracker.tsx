@@ -19,7 +19,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { ChartTooltipContent, ChartContainer, ChartTooltip } from '@/components/ui/chart';
 import { db } from '@/lib/firebase';
-import { collection, addDoc, serverTimestamp, query, where, orderBy, onSnapshot } from 'firebase/firestore';
+import { collection, addDoc, serverTimestamp, query, where, orderBy, onSnapshot, Timestamp } from 'firebase/firestore';
 import { format, subDays, startOfDay } from 'date-fns';
 
 const moods = [
@@ -55,16 +55,17 @@ export default function MoodTracker() {
     );
 
     const unsubscribe = onSnapshot(moodQuery, (querySnapshot) => {
-      const dailyMoods = new Map<string, { moodLevel: number, timestamp: Date }>();
+      const dailyMoods = new Map<string, number>();
       
       querySnapshot.forEach((doc) => {
         const data = doc.data();
-        const date = data.timestamp.toDate();
-        const day = format(date, 'MMM d');
-        
-        // Only take the latest mood for each day
-        if (!dailyMoods.has(day)) {
-            dailyMoods.set(day, { moodLevel: data.moodLevel, timestamp: date });
+        if (data.timestamp) {
+            const date = (data.timestamp as Timestamp).toDate();
+            const day = format(date, 'MMM d');
+            
+            if (!dailyMoods.has(day)) {
+                dailyMoods.set(day, data.moodLevel);
+            }
         }
       });
       
@@ -73,7 +74,7 @@ export default function MoodTracker() {
         const day = format(date, 'MMM d');
         return {
           day: day,
-          mood: dailyMoods.get(day)?.moodLevel || 0,
+          mood: dailyMoods.get(day) || 0,
         };
       }).reverse();
       
@@ -83,21 +84,17 @@ export default function MoodTracker() {
       const todayMood = dailyMoods.get(todayStr);
 
       if (todayMood) {
-        setSelectedMood(todayMood.moodLevel);
+        setSelectedMood(todayMood);
       } else {
         setSelectedMood(null);
       }
     });
 
-    // Cleanup subscription on unmount
     return () => unsubscribe();
   }, []);
 
   const handleMoodSelection = async (moodLevel: number) => {
-    // Optimistically update the UI
     setSelectedMood(moodLevel);
-    const todayStr = format(new Date(), 'MMM d');
-    setMoodData(prevData => prevData.map(d => d.day === todayStr ? { ...d, mood: moodLevel } : d));
     
     try {
       await addDoc(collection(db, "moods"), {
@@ -157,16 +154,14 @@ export default function MoodTracker() {
                 <ChartTooltip
                     cursor={false}
                     content={<ChartTooltipContent 
-                        labelFormatter={(label, payload) => {
-                           if (payload && payload.length > 0) {
-                             const dayPayload = payload[0].payload;
-                             if(dayPayload.mood > 0) {
-                              return `${dayPayload.day}: ${moods.find(m => m.level === dayPayload.mood)?.label}`
-                             }
-                             return `${dayPayload.day}: No entry`;
-                           }
-                           return label;
+                        formatter={(value, name, props) => {
+                            if (props.payload.mood > 0) {
+                                const moodLabel = moods.find(m => m.level === props.payload.mood)?.label;
+                                return [`${moodLabel}`, "Mood"];
+                            }
+                            return ["No Entry", "Mood"];
                         }}
+                        labelFormatter={(label) => label}
                         indicator="dot"
                     />}
                 />
