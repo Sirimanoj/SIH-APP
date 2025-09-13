@@ -52,7 +52,8 @@ export default function ChatInterface() {
     const userMessage = quickReply || input;
     if (!userMessage.trim()) return;
 
-    setMessages((prev) => [...prev, { role: 'user', text: userMessage }]);
+    const newMessages: Message[] = [...messages, { role: 'user', text: userMessage }];
+    setMessages(newMessages);
     setInput('');
     setIsTyping(true);
 
@@ -60,7 +61,8 @@ export default function ChatInterface() {
     await new Promise(resolve => setTimeout(resolve, 500));
     
     try {
-        const result = await handleChatMessage(userMessage);
+        const conversationHistory = newMessages.map(m => `${m.role}: ${m.text}`).join('\n');
+        const result = await handleChatMessage(userMessage, conversationHistory);
         
         if (result.isCrisis) {
             setIsCrisis(true);
@@ -103,7 +105,7 @@ export default function ChatInterface() {
                     )}
                     <div
                       className={cn(
-                        'max-w-[75%] rounded-lg p-3 text-sm',
+                        'max-w-[75%] rounded-lg p-3 text-sm whitespace-pre-wrap',
                         message.role === 'user'
                           ? 'bg-primary text-primary-foreground'
                           : 'bg-secondary'
