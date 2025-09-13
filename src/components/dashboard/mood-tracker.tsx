@@ -144,7 +144,7 @@ export default function MoodTracker() {
             This Week's Mood
           </h3>
           <div className="h-[200px] w-full">
-            <ResponsiveContainer width="100%" height="100%">
+             <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
               <BarChart data={moodData} margin={{ top: 5, right: 20, left: -10, bottom: 5 }}>
                 <XAxis dataKey="day" tickLine={false} axisLine={false} />
                 <YAxis
@@ -172,7 +172,7 @@ export default function MoodTracker() {
                 />
                 <Bar dataKey="mood" radius={[4, 4, 0, 0]} fill="var(--color-mood)" />
               </BarChart>
-            </ResponsiveContainer>
+            </ChartContainer>
           </div>
         </div>
       </CardContent>
