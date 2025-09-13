@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Smile, Meh, Frown, Laugh, Annoyed } from 'lucide-react';
 import {
   Bar,
@@ -18,24 +18,10 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ChartTooltipContent, ChartContainer } from '@/components/ui/chart';
-
-const moodData = [
-  { day: 'Mon', mood: 3 },
-  { day: 'Tue', mood: 4 },
-  { day: 'Wed', mood: 5 },
-  { day: 'Thu', mood: 2 },
-  { day: 'Fri', mood: 4 },
-  { day: 'Sat', mood: 5 },
-  { day: 'Sun', mood: 3 },
-];
-
-const chartConfig = {
-  mood: {
-    label: "Mood Level",
-    color: "hsl(var(--primary))",
-  },
-};
+import { ChartTooltipContent, ChartContainer, ChartTooltip } from '@/components/ui/chart';
+import { db } from '@/lib/firebase';
+import { collection, addDoc, serverTimestamp, query, where, orderBy, limit, onSnapshot } from 'firebase/firestore';
+import { format, subDays } from 'date-fns';
 
 const moods = [
   { level: 1, icon: Annoyed, label: 'Awful', color: 'text-red-500' },
@@ -45,8 +31,69 @@ const moods = [
   { level: 5, icon: Laugh, label: 'Great', color: 'text-blue-500' },
 ];
 
+const chartConfig = {
+  mood: {
+    label: "Mood Level",
+    color: "hsl(var(--primary))",
+  },
+};
+
+// A placeholder user ID. Replace with actual user ID after implementing auth.
+const USER_ID = "anonymous_user"; 
+
 export default function MoodTracker() {
   const [selectedMood, setSelectedMood] = useState<number | null>(null);
+  const [moodData, setMoodData] = useState<{ day: string; mood: number }[]>([]);
+
+  useEffect(() => {
+    const today = new Date();
+    const lastSevenDays = Array.from({ length: 7 }).map((_, i) => format(subDays(today, i), 'E'));
+    
+    const moodQuery = query(
+      collection(db, "moods"),
+      where("userId", "==", USER_ID),
+      where("timestamp", ">=", subDays(new Date(), 7)),
+      orderBy("timestamp", "desc"),
+      limit(7)
+    );
+
+    const unsubscribe = onSnapshot(moodQuery, (querySnapshot) => {
+      const dailyMoods = new Map<string, number>();
+      
+      querySnapshot.forEach((doc) => {
+        const data = doc.data();
+        const day = format(data.timestamp.toDate(), 'E');
+        if (!dailyMoods.has(day)) {
+            dailyMoods.set(day, data.moodLevel);
+        }
+      });
+
+      const chartData = lastSevenDays.reverse().map(day => ({
+          day,
+          mood: dailyMoods.get(day) || 0, // Use 0 if no mood was logged for that day
+      }));
+
+      setMoodData(chartData);
+    });
+
+    // Cleanup subscription on unmount
+    return () => unsubscribe();
+  }, []);
+
+  const handleMoodSelection = async (moodLevel: number) => {
+    setSelectedMood(moodLevel);
+    try {
+      await addDoc(collection(db, "moods"), {
+        userId: USER_ID,
+        moodLevel: moodLevel,
+        timestamp: serverTimestamp(),
+      });
+      // Optionally show a success toast
+    } catch (error) {
+      console.error("Error adding document: ", error);
+      // Optionally show an error toast
+    }
+  };
 
   return (
     <Card>
@@ -66,7 +113,7 @@ export default function MoodTracker() {
               className={`h-16 w-16 flex-col gap-1 transition-transform duration-200 hover:scale-110 ${
                 selectedMood === mood.level ? 'scale-110 bg-primary/20' : ''
               }`}
-              onClick={() => setSelectedMood(mood.level)}
+              onClick={() => handleMoodSelection(mood.level)}
               aria-label={mood.label}
             >
               <mood.icon
@@ -91,10 +138,15 @@ export default function MoodTracker() {
                     ticks={[1, 2, 3, 4, 5]}
                     tickFormatter={(value) => moods.find(m => m.level === value)?.label || ''}
                   />
-                  <Tooltip
+                  <ChartTooltip
                       cursor={false}
                       content={<ChartTooltipContent 
-                          labelFormatter={(label, payload) => `${payload[0]?.payload.day}: ${moods.find(m => m.level === payload[0]?.value)?.label}`}
+                          labelFormatter={(label, payload) => {
+                             if (payload && payload.length > 0 && payload[0].value > 0) {
+                                return `${payload[0]?.payload.day}: ${moods.find(m => m.level === payload[0]?.value)?.label}`
+                             }
+                             return `${payload[0]?.payload.day}: No entry`;
+                          }}
                           indicator="dot"
                       />}
                   />
