@@ -3,7 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Bot, BookOpen, HeartPulse, LayoutDashboard, Users, Wind } from 'lucide-react';
+import { Bot, BookOpen, HeartPulse, LayoutDashboard, Users, Wind, CalendarCheck } from 'lucide-react';
 
 import {
   Sidebar,
@@ -19,6 +19,7 @@ const menuItems = [
   { href: '/chatbot', label: 'AI Chatbot', icon: Bot },
   { href: '/resources', label: 'Resources', icon: BookOpen },
   { href: '/community', label: 'Community', icon: Users },
+  { href: '/book-session', label: 'Book a Session', icon: CalendarCheck },
 ];
 
 export function MainNav() {
