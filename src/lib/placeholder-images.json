@@ -1,3 +1,40 @@
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "resource-1",
+      "description": "A person meditating peacefully outdoors.",
+      "imageUrl": "https://picsum.photos/seed/101/600/400",
+      "imageHint": "meditation nature"
+    },
+    {
+      "id": "resource-2",
+      "description": "An open book with highlighted text about mental health.",
+      "imageUrl": "https://picsum.photos/seed/102/600/400",
+      "imageHint": "book study"
+    },
+    {
+      "id": "resource-3",
+      "description": "Headphones resting on a table, suggesting an audio resource.",
+      "imageUrl": "https://picsum.photos/seed/103/600/400",
+      "imageHint": "headphones audio"
+    },
+    {
+      "id": "resource-4",
+      "description": "A person practicing yoga in a bright room.",
+      "imageUrl": "https://picsum.photos/seed/104/600/400",
+      "imageHint": "yoga wellness"
+    },
+    {
+      "id": "resource-5",
+      "description": "A journal and a pen, symbolizing self-reflection.",
+      "imageUrl": "https://picsum.photos/seed/105/600/400",
+      "imageHint": "journal writing"
+    },
+    {
+      "id": "resource-6",
+      "description": "A group of people talking in a circle, representing support groups.",
+      "imageUrl": "https://picsum.photos/seed/106/600/400",
+      "imageHint": "support group"
+    }
+  ]
 }
