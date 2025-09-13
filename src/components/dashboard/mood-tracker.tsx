@@ -8,6 +8,7 @@ import {
   ResponsiveContainer,
   XAxis,
   YAxis,
+  Tooltip,
 } from 'recharts';
 import {
   Card,
@@ -17,7 +18,7 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ChartTooltip, ChartTooltipContent, ChartContainer } from '@/components/ui/chart';
+import { ChartTooltipContent, ChartContainer } from '@/components/ui/chart';
 
 const moodData = [
   { day: 'Mon', mood: 3 },
@@ -56,7 +57,7 @@ export default function MoodTracker() {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="flex justify-around rounded-lg bg-secondary/50 p-4 mb-6">
+        <div className="mb-6 flex justify-around rounded-lg bg-secondary/50 p-4">
           {moods.map((mood) => (
             <Button
               key={mood.level}
@@ -80,25 +81,25 @@ export default function MoodTracker() {
             This Week's Mood
           </h3>
           <div className="h-[200px] w-full">
-            <ChartContainer config={chartConfig} className="w-full">
-              <BarChart data={moodData} margin={{ top: 5, right: 20, left: -10, bottom: 5 }}>
-                <XAxis dataKey="day" tickLine={false} axisLine={false} />
-                <YAxis
-                  tickLine={false}
-                  axisLine={false}
-                  domain={[0, 5]}
-                  ticks={[1, 2, 3, 4, 5]}
-                  tickFormatter={(value) => moods.find(m => m.level === value)?.label || ''}
-                />
-                <ChartTooltip
-                    cursor={false}
-                    content={<ChartTooltipContent 
-                        labelFormatter={(label, payload) => `${payload[0]?.payload.day}: ${moods.find(m => m.level === payload[0]?.value)?.label}`}
-                        indicator="dot"
-                    />}
-                />
-                <Bar dataKey="mood" radius={[4, 4, 0, 0]} fill="var(--color-mood)" />
-              </BarChart>
+            <ChartContainer config={chartConfig} className="h-full w-full">
+                <BarChart data={moodData} margin={{ top: 5, right: 20, left: -10, bottom: 5 }}>
+                  <XAxis dataKey="day" tickLine={false} axisLine={false} />
+                  <YAxis
+                    tickLine={false}
+                    axisLine={false}
+                    domain={[0, 5]}
+                    ticks={[1, 2, 3, 4, 5]}
+                    tickFormatter={(value) => moods.find(m => m.level === value)?.label || ''}
+                  />
+                  <Tooltip
+                      cursor={false}
+                      content={<ChartTooltipContent 
+                          labelFormatter={(label, payload) => `${payload[0]?.payload.day}: ${moods.find(m => m.level === payload[0]?.value)?.label}`}
+                          indicator="dot"
+                      />}
+                  />
+                  <Bar dataKey="mood" radius={[4, 4, 0, 0]} fill="var(--color-mood)" />
+                </BarChart>
             </ChartContainer>
           </div>
         </div>
