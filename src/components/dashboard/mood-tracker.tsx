@@ -8,7 +8,6 @@ import {
   ResponsiveContainer,
   XAxis,
   YAxis,
-  Tooltip,
 } from 'recharts';
 import {
   Card,
@@ -20,8 +19,8 @@ import {
 import { Button } from '@/components/ui/button';
 import { ChartTooltipContent, ChartContainer, ChartTooltip } from '@/components/ui/chart';
 import { db } from '@/lib/firebase';
-import { collection, addDoc, serverTimestamp, query, where, orderBy, limit, onSnapshot } from 'firebase/firestore';
-import { format, subDays, startOfDay, endOfDay } from 'date-fns';
+import { collection, addDoc, serverTimestamp, query, where, orderBy, onSnapshot } from 'firebase/firestore';
+import { format, subDays, startOfDay } from 'date-fns';
 
 const moods = [
   { level: 1, icon: Annoyed, label: 'Awful', color: 'text-red-500' },
@@ -46,42 +45,45 @@ export default function MoodTracker() {
 
   useEffect(() => {
     const today = new Date();
-    const lastSevenDays = Array.from({ length: 7 }).map((_, i) => {
-        const date = subDays(today, i);
-        return {
-            date,
-            day: format(date, 'MMM d'),
-        };
-    });
+    const startDate = startOfDay(subDays(today, 6));
     
     const moodQuery = query(
       collection(db, "moods"),
       where("userId", "==", USER_ID),
-      where("timestamp", ">=", startOfDay(subDays(today, 6))),
+      where("timestamp", ">=", startDate),
       orderBy("timestamp", "desc")
     );
 
     const unsubscribe = onSnapshot(moodQuery, (querySnapshot) => {
-      const dailyMoods = new Map<string, number>();
+      const dailyMoods = new Map<string, { moodLevel: number, timestamp: Date }>();
       
       querySnapshot.forEach((doc) => {
         const data = doc.data();
-        const day = format(data.timestamp.toDate(), 'MMM d');
+        const date = data.timestamp.toDate();
+        const day = format(date, 'MMM d');
+        
+        // Only take the latest mood for each day
         if (!dailyMoods.has(day)) {
-            dailyMoods.set(day, data.moodLevel);
+            dailyMoods.set(day, { moodLevel: data.moodLevel, timestamp: date });
         }
       });
-
-      const chartData = lastSevenDays.reverse().map(d => ({
-          day: d.day,
-          mood: dailyMoods.get(d.day) || 0,
-      }));
-
-      setMoodData(chartData);
+      
+      const lastSevenDaysData = Array.from({ length: 7 }).map((_, i) => {
+        const date = subDays(today, i);
+        const day = format(date, 'MMM d');
+        return {
+          day: day,
+          mood: dailyMoods.get(day)?.moodLevel || 0,
+        };
+      }).reverse();
+      
+      setMoodData(lastSevenDaysData);
 
       const todayStr = format(today, 'MMM d');
-      if (dailyMoods.has(todayStr)) {
-        setSelectedMood(dailyMoods.get(todayStr) as number);
+      const todayMood = dailyMoods.get(todayStr);
+
+      if (todayMood) {
+        setSelectedMood(todayMood.moodLevel);
       } else {
         setSelectedMood(null);
       }
@@ -92,7 +94,11 @@ export default function MoodTracker() {
   }, []);
 
   const handleMoodSelection = async (moodLevel: number) => {
+    // Optimistically update the UI
     setSelectedMood(moodLevel);
+    const todayStr = format(new Date(), 'MMM d');
+    setMoodData(prevData => prevData.map(d => d.day === todayStr ? { ...d, mood: moodLevel } : d));
+    
     try {
       await addDoc(collection(db, "moods"), {
         userId: USER_ID,
@@ -101,6 +107,7 @@ export default function MoodTracker() {
       });
     } catch (error) {
       console.error("Error adding document: ", error);
+      // Revert optimistic update on error if needed
     }
   };
 
@@ -137,35 +144,35 @@ export default function MoodTracker() {
             This Week's Mood
           </h3>
           <div className="h-[200px] w-full">
-            <ChartContainer config={chartConfig} className="h-full w-full">
-                <BarChart data={moodData} margin={{ top: 5, right: 20, left: -10, bottom: 5 }}>
-                  <XAxis dataKey="day" tickLine={false} axisLine={false} />
-                  <YAxis
-                    tickLine={false}
-                    axisLine={false}
-                    domain={[0, 5]}
-                    ticks={[1, 2, 3, 4, 5]}
-                    tickFormatter={(value) => moods.find(m => m.level === value)?.label || ''}
-                  />
-                  <ChartTooltip
-                      cursor={false}
-                      content={<ChartTooltipContent 
-                          labelFormatter={(label, payload) => {
-                             if (payload && payload.length > 0) {
-                               const dayPayload = payload[0].payload;
-                               if(dayPayload.mood > 0) {
-                                return `${dayPayload.day}: ${moods.find(m => m.level === dayPayload.mood)?.label}`
-                               }
-                               return `${dayPayload.day}: No entry`;
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={moodData} margin={{ top: 5, right: 20, left: -10, bottom: 5 }}>
+                <XAxis dataKey="day" tickLine={false} axisLine={false} />
+                <YAxis
+                  tickLine={false}
+                  axisLine={false}
+                  domain={[0, 5]}
+                  ticks={[1, 2, 3, 4, 5]}
+                  tickFormatter={(value) => moods.find(m => m.level === value)?.label || ''}
+                />
+                <ChartTooltip
+                    cursor={false}
+                    content={<ChartTooltipContent 
+                        labelFormatter={(label, payload) => {
+                           if (payload && payload.length > 0) {
+                             const dayPayload = payload[0].payload;
+                             if(dayPayload.mood > 0) {
+                              return `${dayPayload.day}: ${moods.find(m => m.level === dayPayload.mood)?.label}`
                              }
-                             return label;
-                          }}
-                          indicator="dot"
-                      />}
-                  />
-                  <Bar dataKey="mood" radius={[4, 4, 0, 0]} fill="var(--color-mood)" />
-                </BarChart>
-            </ChartContainer>
+                             return `${dayPayload.day}: No entry`;
+                           }
+                           return label;
+                        }}
+                        indicator="dot"
+                    />}
+                />
+                <Bar dataKey="mood" radius={[4, 4, 0, 0]} fill="var(--color-mood)" />
+              </BarChart>
+            </ResponsiveContainer>
           </div>
         </div>
       </CardContent>
