@@ -15,7 +15,7 @@ const actions = [
   {
     href: '/chatbot',
     icon: Bot,
-    title: 'AI Chatbot',
+    title: 'Mitra',
     description: "Talk about what's on your mind.",
     color: 'bg-primary/10 text-primary',
   },

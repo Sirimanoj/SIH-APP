@@ -16,7 +16,7 @@ import {
 
 const menuItems = [
   { href: '/', label: 'Dashboard', icon: LayoutDashboard },
-  { href: '/chatbot', label: 'AI Chatbot', icon: Bot },
+  { href: '/chatbot', label: 'Mitra', icon: Bot },
   { href: '/resources', label: 'Resources', icon: BookOpen },
   { href: '/community', label: 'Community', icon: Users },
   { href: '/book-session', label: 'Book a Session', icon: CalendarCheck },
