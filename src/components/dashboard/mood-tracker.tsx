@@ -55,7 +55,7 @@ export default function MoodTracker() {
     );
 
     const unsubscribe = onSnapshot(moodQuery, (querySnapshot) => {
-      const dailyMoods = new Map<string, number>();
+      const dailyMoods = new Map<string, { moodLevel: number; timestamp: Date }>();
       
       querySnapshot.forEach((doc) => {
         const data = doc.data();
@@ -63,8 +63,9 @@ export default function MoodTracker() {
             const date = (data.timestamp as Timestamp).toDate();
             const day = format(date, 'MMM d');
             
-            if (!dailyMoods.has(day)) {
-                dailyMoods.set(day, data.moodLevel);
+            // Only store the latest mood for each day
+            if (!dailyMoods.has(day) || date > dailyMoods.get(day)!.timestamp) {
+                dailyMoods.set(day, { moodLevel: data.moodLevel, timestamp: date });
             }
         }
       });
@@ -74,7 +75,7 @@ export default function MoodTracker() {
         const day = format(date, 'MMM d');
         return {
           day: day,
-          mood: dailyMoods.get(day) || 0,
+          mood: dailyMoods.get(day)?.moodLevel || 0,
         };
       }).reverse();
       
@@ -84,7 +85,7 @@ export default function MoodTracker() {
       const todayMood = dailyMoods.get(todayStr);
 
       if (todayMood) {
-        setSelectedMood(todayMood);
+        setSelectedMood(todayMood.moodLevel);
       } else {
         setSelectedMood(null);
       }
@@ -96,6 +97,10 @@ export default function MoodTracker() {
   const handleMoodSelection = async (moodLevel: number) => {
     setSelectedMood(moodLevel);
     
+    // Optimistically update UI
+    const todayStr = format(new Date(), 'MMM d');
+    setMoodData(prevData => prevData.map(d => d.day === todayStr ? { ...d, mood: moodLevel } : d));
+
     try {
       await addDoc(collection(db, "moods"), {
         userId: USER_ID,
@@ -117,22 +122,22 @@ export default function MoodTracker() {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="mb-6 flex justify-around rounded-lg bg-secondary/50 p-4">
+        <div className="mb-8 flex justify-around rounded-lg bg-secondary/50 p-4">
           {moods.map((mood) => (
             <Button
               key={mood.level}
               variant="ghost"
               size="icon"
-              className={`h-16 w-16 flex-col gap-1 transition-transform duration-200 hover:scale-110 ${
+              className={`h-20 w-20 flex-col gap-2 transition-transform duration-200 hover:scale-110 ${
                 selectedMood === mood.level ? 'scale-110 bg-primary/20' : ''
               }`}
               onClick={() => handleMoodSelection(mood.level)}
               aria-label={mood.label}
             >
               <mood.icon
-                className={`h-8 w-8 ${mood.color} transition-colors`}
+                className={`h-9 w-9 ${mood.color} transition-colors`}
               />
-              <span className="text-xs text-muted-foreground">{mood.label}</span>
+              <span className="text-sm text-muted-foreground">{mood.label}</span>
             </Button>
           ))}
         </div>
@@ -143,26 +148,28 @@ export default function MoodTracker() {
           <div className="h-[200px] w-full">
             <ResponsiveContainer width="100%" height="100%">
               <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
-                <BarChart data={moodData} margin={{ top: 5, right: 20, left: -10, bottom: 5 }}>
-                  <XAxis dataKey="day" tickLine={false} axisLine={false} />
+                <BarChart data={moodData} margin={{ top: 5, right: 20, left: -20, bottom: 5 }}>
+                  <XAxis dataKey="day" tickLine={false} axisLine={false} tickMargin={8} />
                   <YAxis
                     tickLine={false}
                     axisLine={false}
+                    tickMargin={8}
                     domain={[0, 5]}
                     ticks={[1, 2, 3, 4, 5]}
-                    tickFormatter={(value) => moods.find(m => m.level === value)?.label.slice(0,3) || ''}
+                    tickFormatter={(value) => moods.find(m => m.level === value)?.label || ''}
                   />
                   <ChartTooltip
                       cursor={false}
                       content={<ChartTooltipContent 
                           formatter={(value, name, props) => {
-                              if (props.payload.mood > 0) {
-                                  const moodLabel = moods.find(m => m.level === props.payload.mood)?.label;
+                              const moodLevel = props.payload.mood;
+                              if (moodLevel > 0) {
+                                  const moodLabel = moods.find(m => m.level === moodLevel)?.label;
                                   return [`${moodLabel}`, "Mood"];
                               }
                               return ["No Entry", "Mood"];
                           }}
-                          labelFormatter={(label) => label}
+                          labelFormatter={(label) => format(new Date(label), 'eeee, MMM d')}
                           indicator="dot"
                       />}
                   />
