@@ -141,33 +141,35 @@ export default function MoodTracker() {
             This Week's Mood
           </h3>
           <div className="h-[200px] w-full">
-             <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
-              <BarChart data={moodData} margin={{ top: 5, right: 20, left: -10, bottom: 5 }}>
-                <XAxis dataKey="day" tickLine={false} axisLine={false} />
-                <YAxis
-                  tickLine={false}
-                  axisLine={false}
-                  domain={[0, 5]}
-                  ticks={[1, 2, 3, 4, 5]}
-                  tickFormatter={(value) => moods.find(m => m.level === value)?.label || ''}
-                />
-                <ChartTooltip
-                    cursor={false}
-                    content={<ChartTooltipContent 
-                        formatter={(value, name, props) => {
-                            if (props.payload.mood > 0) {
-                                const moodLabel = moods.find(m => m.level === props.payload.mood)?.label;
-                                return [`${moodLabel}`, "Mood"];
-                            }
-                            return ["No Entry", "Mood"];
-                        }}
-                        labelFormatter={(label) => label}
-                        indicator="dot"
-                    />}
-                />
-                <Bar dataKey="mood" radius={[4, 4, 0, 0]} fill="var(--color-mood)" />
-              </BarChart>
-            </ChartContainer>
+            <ResponsiveContainer width="100%" height="100%">
+              <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
+                <BarChart data={moodData} margin={{ top: 5, right: 20, left: -10, bottom: 5 }}>
+                  <XAxis dataKey="day" tickLine={false} axisLine={false} />
+                  <YAxis
+                    tickLine={false}
+                    axisLine={false}
+                    domain={[0, 5]}
+                    ticks={[1, 2, 3, 4, 5]}
+                    tickFormatter={(value) => moods.find(m => m.level === value)?.label.slice(0,3) || ''}
+                  />
+                  <ChartTooltip
+                      cursor={false}
+                      content={<ChartTooltipContent 
+                          formatter={(value, name, props) => {
+                              if (props.payload.mood > 0) {
+                                  const moodLabel = moods.find(m => m.level === props.payload.mood)?.label;
+                                  return [`${moodLabel}`, "Mood"];
+                              }
+                              return ["No Entry", "Mood"];
+                          }}
+                          labelFormatter={(label) => label}
+                          indicator="dot"
+                      />}
+                  />
+                  <Bar dataKey="mood" radius={[4, 4, 0, 0]} fill="var(--color-mood)" />
+                </BarChart>
+              </ChartContainer>
+            </ResponsiveContainer>
           </div>
         </div>
       </CardContent>
