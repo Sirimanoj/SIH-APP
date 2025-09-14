@@ -26,7 +26,7 @@ export default function ChatInterface() {
   const [messages, setMessages] = useState<Message[]>([
     {
       role: 'bot',
-      text: "Hello! I'm your CampusMind assistant. How are you feeling today? You can talk to me about anything on your mind.",
+      text: "Hello! I'm your MannMitra assistant. How are you feeling today? You can talk to me about anything on your mind.",
     },
   ]);
   const [input, setInput] = useState('');

@@ -3,7 +3,7 @@ import './globals.css';
 import { Toaster } from "@/components/ui/toaster";
 
 export const metadata: Metadata = {
-  title: 'CampusMind',
+  title: 'MannMitra',
   description: 'A comprehensive digital mental health support system for Indian college students with AI chatbot, counseling booking, resource hub, peer support, and admin analytics',
 };
 

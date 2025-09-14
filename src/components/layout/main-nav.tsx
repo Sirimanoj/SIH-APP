@@ -32,7 +32,7 @@ export function MainNav() {
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
                 <HeartPulse className="h-5 w-5 text-primary-foreground" />
             </div>
-            <h1 className="font-headline text-xl font-semibold">CampusMind</h1>
+            <h1 className="font-headline text-xl font-semibold">MannMitra</h1>
         </div>
       </SidebarHeader>
       <SidebarContent>
