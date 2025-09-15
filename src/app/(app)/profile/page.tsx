@@ -1,3 +1,4 @@
+
 'use client';
 
 import React from 'react';
@@ -13,9 +14,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { User } from 'lucide-react';
-import { useRouter } from 'next/navigation';
 
-// Mock user data since auth is disabled
 const user = {
   displayName: 'Student',
   email: 'student@example.com',
@@ -23,12 +22,12 @@ const user = {
 };
 
 export default function ProfilePage() {
-  const router = useRouter();
 
   const handleLogout = () => {
     // Since auth is disabled, we can just navigate to a "logged out" state if one exists
     // For now, we'll just log to the console.
     console.log("User logged out (simulation)");
+    // In a real app with auth, you might do: router.push('/login');
   };
 
   return (

@@ -1,4 +1,6 @@
+
 import React from 'react';
+import Link from 'next/link';
 import MoodTracker from '@/components/dashboard/mood-tracker';
 import DailyTip from '@/components/dashboard/daily-tip';
 import QuickActions from '@/components/dashboard/quick-actions';
@@ -27,3 +29,4 @@ export default function DashboardPage() {
     </div>
   );
 }
+

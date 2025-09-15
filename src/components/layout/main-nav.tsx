@@ -1,3 +1,4 @@
+
 'use client';
 
 import React from 'react';
@@ -17,7 +18,7 @@ import {
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 
 const menuItems = [
-  { href: '/', label: 'Dashboard', icon: LayoutDashboard },
+  { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { href: '/chatbot', label: 'Mitra', icon: Bot },
   { href: '/resources', label: 'Resources', icon: BookOpen },
   { href: '/community', label: 'Community', icon: Users },
