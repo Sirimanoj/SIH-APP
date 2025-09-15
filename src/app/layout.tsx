@@ -7,6 +7,7 @@ export const metadata: Metadata = {
   description: 'A comprehensive digital mental health support system for Indian college students with AI chatbot, counseling booking, resource hub, peer support, and admin analytics',
 };
 
+// This is the root layout. It does not need to know about the locale.
 export default function RootLayout({
   children
 }: Readonly<{

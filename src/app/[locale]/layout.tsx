@@ -1,16 +1,10 @@
 import React from 'react';
-import { ClientProviders } from '@/components/layout/client-providers';
-import {NextIntlClientProvider} from 'next-intl';
-import {getMessages} from 'next-intl/server';
+import {NextIntlClientProvider, useMessages} from 'next-intl';
 import { notFound } from 'next/navigation';
+import { ClientProviders } from '@/components/layout/client-providers';
 
-export default async function AppLayout({ children, params: {locale} }: { children: React.ReactNode, params: {locale: string} }) {
-  let messages;
-  try {
-    messages = await getMessages();
-  } catch (error) {
-    notFound();
-  }
+export default function AppLayout({ children, params: {locale} }: { children: React.ReactNode, params: {locale: string} }) {
+  const messages = useMessages();
   
   return (
     <html lang={locale}>
