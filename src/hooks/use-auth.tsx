@@ -50,7 +50,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         const token = await getIdToken(user);
         setCookie('firebase-auth-token', token, 1);
         const isAuthPage = pathname.startsWith('/login') || pathname.startsWith('/register');
-        if (isAuthPge) {
+        if (isAuthPage) {
           router.replace('/');
         }
       } else {
