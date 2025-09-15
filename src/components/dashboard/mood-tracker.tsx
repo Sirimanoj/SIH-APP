@@ -2,13 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Smile, Meh, Frown, Laugh, Annoyed } from 'lucide-react';
-import {
-  Bar,
-  BarChart,
-  ResponsiveContainer,
-  XAxis,
-  YAxis,
-} from 'recharts';
+import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis } from 'recharts';
 import {
   Card,
   CardContent,
@@ -17,10 +11,24 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ChartTooltipContent, ChartContainer, ChartTooltip } from '@/components/ui/chart';
+import {
+  ChartTooltipContent,
+  ChartContainer,
+  ChartTooltip,
+} from '@/components/ui/chart';
 import { db } from '@/lib/firebase';
-import { collection, addDoc, serverTimestamp, query, where, orderBy, onSnapshot, Timestamp } from 'firebase/firestore';
+import {
+  collection,
+  addDoc,
+  serverTimestamp,
+  query,
+  where,
+  orderBy,
+  onSnapshot,
+  Timestamp,
+} from 'firebase/firestore';
 import { format, subDays, startOfDay } from 'date-fns';
+import { useAuth } from '@/hooks/use-auth';
 
 const moods = [
   { level: 1, icon: Annoyed, label: 'Awful', color: 'text-red-500' },
@@ -32,53 +40,56 @@ const moods = [
 
 const chartConfig = {
   mood: {
-    label: "Mood Level",
-    color: "hsl(var(--primary))",
+    label: 'Mood Level',
+    color: 'hsl(var(--primary))',
   },
 };
 
-const USER_ID = "anonymous_user"; 
-
 export default function MoodTracker() {
+  const { user } = useAuth();
   const [selectedMood, setSelectedMood] = useState<number | null>(null);
   const [moodData, setMoodData] = useState<{ day: string; mood: number }[]>([]);
 
   useEffect(() => {
+    if (!user) return;
+
     const today = new Date();
     const startDate = startOfDay(subDays(today, 6));
-    
+
     const moodQuery = query(
-      collection(db, "moods"),
-      where("userId", "==", USER_ID),
-      where("timestamp", ">=", startDate),
-      orderBy("timestamp", "desc")
+      collection(db, 'moods'),
+      where('userId', '==', user.uid),
+      where('timestamp', '>=', startDate),
+      orderBy('timestamp', 'desc')
     );
 
     const unsubscribe = onSnapshot(moodQuery, (querySnapshot) => {
       const dailyMoods = new Map<string, { moodLevel: number; timestamp: Date }>();
-      
+
       querySnapshot.forEach((doc) => {
         const data = doc.data();
         if (data.timestamp) {
-            const date = (data.timestamp as Timestamp).toDate();
-            const day = format(date, 'MMM d');
-            
-            // Only store the latest mood for each day
-            if (!dailyMoods.has(day) || date > dailyMoods.get(day)!.timestamp) {
-                dailyMoods.set(day, { moodLevel: data.moodLevel, timestamp: date });
-            }
+          const date = (data.timestamp as Timestamp).toDate();
+          const day = format(date, 'MMM d');
+
+          // Only store the latest mood for each day
+          if (!dailyMoods.has(day) || date > dailyMoods.get(day)!.timestamp) {
+            dailyMoods.set(day, { moodLevel: data.moodLevel, timestamp: date });
+          }
         }
       });
-      
-      const lastSevenDaysData = Array.from({ length: 7 }).map((_, i) => {
-        const date = subDays(today, i);
-        const day = format(date, 'MMM d');
-        return {
-          day: day,
-          mood: dailyMoods.get(day)?.moodLevel || 0,
-        };
-      }).reverse();
-      
+
+      const lastSevenDaysData = Array.from({ length: 7 })
+        .map((_, i) => {
+          const date = subDays(today, i);
+          const day = format(date, 'MMM d');
+          return {
+            day: day,
+            mood: dailyMoods.get(day)?.moodLevel || 0,
+          };
+        })
+        .reverse();
+
       setMoodData(lastSevenDaysData);
 
       const todayStr = format(today, 'MMM d');
@@ -92,23 +103,26 @@ export default function MoodTracker() {
     });
 
     return () => unsubscribe();
-  }, []);
+  }, [user]);
 
   const handleMoodSelection = async (moodLevel: number) => {
+    if (!user) return;
     setSelectedMood(moodLevel);
-    
+
     // Optimistically update UI
     const todayStr = format(new Date(), 'MMM d');
-    setMoodData(prevData => prevData.map(d => d.day === todayStr ? { ...d, mood: moodLevel } : d));
+    setMoodData((prevData) =>
+      prevData.map((d) => (d.day === todayStr ? { ...d, mood: moodLevel } : d))
+    );
 
     try {
-      await addDoc(collection(db, "moods"), {
-        userId: USER_ID,
+      await addDoc(collection(db, 'moods'), {
+        userId: user.uid,
         moodLevel: moodLevel,
         timestamp: serverTimestamp(),
       });
     } catch (error) {
-      console.error("Error adding document: ", error);
+      console.error('Error adding document: ', error);
       // Revert optimistic update on error if needed
     }
   };
@@ -128,14 +142,14 @@ export default function MoodTracker() {
               key={mood.level}
               variant="ghost"
               size="icon"
-              className={`h-20 w-20 flex-col gap-2 transition-transform duration-200 hover:scale-110 ${
+              className={`h-24 w-24 flex-col gap-2 transition-transform duration-200 hover:scale-110 ${
                 selectedMood === mood.level ? 'scale-110 bg-primary/20' : ''
               }`}
               onClick={() => handleMoodSelection(mood.level)}
               aria-label={mood.label}
             >
               <mood.icon
-                className={`h-9 w-9 ${mood.color} transition-colors`}
+                className={`h-10 w-10 ${mood.color} transition-colors`}
               />
               <span className="text-sm text-muted-foreground">{mood.label}</span>
             </Button>
@@ -145,7 +159,7 @@ export default function MoodTracker() {
           <h3 className="mb-4 font-headline text-lg font-semibold">
             This Week's Mood
           </h3>
-          <div className="h-[200px] w-full">
+          <div className="h-[250px] w-full">
             <ResponsiveContainer width="100%" height="100%">
               <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
                 <BarChart data={moodData} margin={{ top: 5, right: 20, left: -20, bottom: 5 }}>
@@ -156,22 +170,24 @@ export default function MoodTracker() {
                     tickMargin={8}
                     domain={[0, 5]}
                     ticks={[1, 2, 3, 4, 5]}
-                    tickFormatter={(value) => moods.find(m => m.level === value)?.label || ''}
+                    tickFormatter={(value) => moods.find((m) => m.level === value)?.label || ''}
                   />
                   <ChartTooltip
-                      cursor={false}
-                      content={<ChartTooltipContent 
-                          formatter={(value, name, props) => {
-                              const moodLevel = props.payload.mood;
-                              if (moodLevel > 0) {
-                                  const moodLabel = moods.find(m => m.level === moodLevel)?.label;
-                                  return [`${moodLabel}`, "Mood"];
-                              }
-                              return ["No Entry", "Mood"];
-                          }}
-                          labelFormatter={(label) => format(new Date(label), 'eeee, MMM d')}
-                          indicator="dot"
-                      />}
+                    cursor={false}
+                    content={
+                      <ChartTooltipContent
+                        formatter={(value, name, props) => {
+                          const moodLevel = props.payload.mood;
+                          if (moodLevel > 0) {
+                            const moodLabel = moods.find((m) => m.level === moodLevel)?.label;
+                            return [`${moodLabel}`, 'Mood'];
+                          }
+                          return ['No Entry', ''];
+                        }}
+                        labelFormatter={(label) => format(new Date(label), 'eeee, MMM d')}
+                        indicator="dot"
+                      />
+                    }
                   />
                   <Bar dataKey="mood" radius={[4, 4, 0, 0]} fill="var(--color-mood)" />
                 </BarChart>

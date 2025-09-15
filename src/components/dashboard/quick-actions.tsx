@@ -6,7 +6,6 @@ import { Bot, BookOpen, Users, CalendarCheck } from 'lucide-react';
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
