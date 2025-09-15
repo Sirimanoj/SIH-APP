@@ -47,6 +47,8 @@ export default function RegisterPage() {
           errorMessage = 'The password is too weak. It must be at least 6 characters long.';
       } else if (error.code === 'auth/invalid-email') {
           errorMessage = 'Please enter a valid email address.';
+      } else if (error.code === 'auth/configuration-not-found') {
+          errorMessage = "Configuration error. Please enable Email/Password sign-in provider in your Firebase console's Authentication section.";
       } else if (error.message) {
           errorMessage = error.message;
       }
