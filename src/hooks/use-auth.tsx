@@ -35,7 +35,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     });
 
     return () => unsubscribe();
-  }, [router, pathname]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   
   const login = (email: string, password: string) => {
     return signInWithEmailAndPassword(auth, email, password);
