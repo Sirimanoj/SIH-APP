@@ -4,9 +4,9 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
-// This is a temporary redirect to the dashboard.
-// In a real app, you might have a landing page here.
-export default function HomePage() {
+// This page redirects the user from the root of a locale (e.g., /en or /hi)
+// to the main dashboard page for that locale.
+export default function LocaleRootPage() {
   const router = useRouter();
 
   useEffect(() => {
