@@ -3,7 +3,7 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { Bot, BookOpen, Users, CalendarCheck } from 'lucide-react';
+import { Bot, BookOpen, Users, CalendarCheck, BrainCircuit } from 'lucide-react';
 import {
   Card,
   CardContent,
@@ -22,6 +22,13 @@ export default function QuickActions() {
       title: t('mitraTitle'),
       description: t('mitraDescription'),
       color: 'bg-primary/10 text-primary',
+    },
+    {
+      href: '/cbt-exercise',
+      icon: BrainCircuit,
+      title: t('cbtExerciseTitle'),
+      description: t('cbtExerciseDescription'),
+      color: 'bg-purple-100 text-purple-600',
     },
     {
       href: '/resources',

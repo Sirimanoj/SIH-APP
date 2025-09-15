@@ -19,6 +19,8 @@
     "title": "Quick Actions",
     "mitraTitle": "Mitra",
     "mitraDescription": "Talk about what's on your mind.",
+    "cbtExerciseTitle": "CBT Exercise",
+    "cbtExerciseDescription": "Challenge and reframe negative thoughts.",
     "resourcesTitle": "Resources",
     "resourcesDescription": "Explore articles and guides.",
     "communityTitle": "Community",
@@ -36,6 +38,7 @@
     "resources": "Resources",
     "community": "Community",
     "bookSession": "Book a Session",
+    "cbtExercise": "CBT Exercise",
     "profile": "Profile"
   },
   "Header": {
@@ -93,5 +96,22 @@
     "articles": "Articles",
     "videos": "Videos",
     "audio": "Audio"
+  },
+  "CbtExercise": {
+    "title": "CBT: Thought Reframing",
+    "description": "A tool to help you identify, challenge, and reframe negative thoughts.",
+    "step1Title": "Step 1: Identify Your Thought",
+    "step1Description": "What's a negative or anxious thought that's been on your mind recently?",
+    "thoughtPlaceholder": "For example: 'I'm going to fail my exam and my future is ruined.'",
+    "analyzeButton": "Analyze Thought",
+    "analyzingButton": "Analyzing...",
+    "originalThoughtTitle": "Your Original Thought",
+    "distortionsTitle": "Cognitive Distortions",
+    "distortionsDescription": "These are common patterns of thinking that can be unhelpful. Does your thought fit any of these?",
+    "challengeTitle": "Challenge Your Thought",
+    "challengeDescription": "Ask yourself these questions to examine the thought more objectively.",
+    "reframeTitle": "Reframe Your Thought",
+    "reframeDescription": "Here is a more balanced and compassionate way to look at the situation.",
+    "startOverButton": "Start a New Exercise"
   }
 }

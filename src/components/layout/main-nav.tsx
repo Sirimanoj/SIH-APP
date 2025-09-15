@@ -4,7 +4,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Bot, BookOpen, HeartPulse, LayoutDashboard, Users, CalendarCheck, User as UserIcon, LogOut } from 'lucide-react';
+import { Bot, BookOpen, HeartPulse, LayoutDashboard, Users, CalendarCheck, User as UserIcon, LogOut, BrainCircuit } from 'lucide-react';
 import {
   Sidebar,
   SidebarHeader,
@@ -28,6 +28,7 @@ export function MainNav() {
     { href: '/resources', label: t('resources'), icon: BookOpen },
     { href: '/community', label: t('community'), icon: Users },
     { href: '/book-session', label: t('bookSession'), icon: CalendarCheck },
+    { href: '/cbt-exercise', label: t('cbtExercise'), icon: BrainCircuit },
   ];
 
   return (

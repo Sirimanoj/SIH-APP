@@ -7,3 +7,4 @@ import '@/ai/flows/chatbot-resource-recommendation.ts';
 import '@/ai/flows/summarize-conversation-sentiment.ts';
 import '@/ai/flows/chatbot-guided-exercise.ts';
 import '@/ai/flows/chatbot-conversation.ts';
+import '@/ai/flows/cbt-guided-exercise.ts';

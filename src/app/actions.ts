@@ -5,6 +5,9 @@ import { getGuidedExercise } from '@/ai/flows/chatbot-guided-exercise';
 import { chatbotResourceRecommendation } from '@/ai/flows/chatbot-resource-recommendation';
 import { summarizeConversationSentiment } from '@/ai/flows/summarize-conversation-sentiment';
 import { getChatbotResponse } from '@/ai/flows/chatbot-conversation';
+import { cbtGuidedExercise } from '@/ai/flows/cbt-guided-exercise';
+
+export { cbtGuidedExercise };
 
 export async function handleChatMessage(message: string, conversationHistory: string): Promise<{ response: string, isCrisis: boolean }> {
   try {
