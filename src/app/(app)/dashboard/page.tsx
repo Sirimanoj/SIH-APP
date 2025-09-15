@@ -1,19 +1,22 @@
 
+'use client';
 import React from 'react';
 import Link from 'next/link';
 import MoodTracker from '@/components/dashboard/mood-tracker';
 import DailyTip from '@/components/dashboard/daily-tip';
 import QuickActions from '@/components/dashboard/quick-actions';
+import {useTranslations} from 'next-intl';
 
 export default function DashboardPage() {
+  const t = useTranslations('Dashboard');
   return (
     <div className="flex flex-col gap-8">
       <div>
         <h1 className="font-headline text-3xl font-bold tracking-tight">
-          Welcome back, Student!
+          {t('welcome')}
         </h1>
         <p className="text-muted-foreground">
-          Your mental wellness journey continues here.
+          {t('subtitle')}
         </p>
       </div>
 
@@ -29,4 +32,3 @@ export default function DashboardPage() {
     </div>
   );
 }
-

@@ -1,22 +1,14 @@
+import createMiddleware from 'next-intl/middleware';
 
-import { NextResponse, type NextRequest } from 'next/server';
+export default createMiddleware({
+  // A list of all locales that are supported
+  locales: ['en', 'hi'],
 
-export function middleware(request: NextRequest) {
-  // Bypassing all authentication checks for now.
-  return NextResponse.next();
-}
+  // Used when no locale matches
+  defaultLocale: 'en'
+});
 
 export const config = {
-  matcher: [
-    /*
-     * Match all request paths except for the ones starting with:
-     * - api (API routes)
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     *
-     * THIS MATCHER IS EFFECTIVELY DISABLED BY THE EMPTY MIDDLEWARE FUNCTION ABOVE.
-     */
-    '/((?!api|_next/static|_next/image|favicon.ico).*)',
-  ],
+  // Match only internationalized pathnames
+  matcher: ['/', '/(hi|en)/:path*']
 };

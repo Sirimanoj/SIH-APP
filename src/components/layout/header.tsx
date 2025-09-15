@@ -5,6 +5,7 @@ import { Menu, Phone } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { SidebarTrigger } from '@/components/ui/sidebar';
 import EmergencyDialog from '@/components/emergency-dialog';
+import LanguageSwitcher from './language-switcher';
 
 export function Header() {
   const [isEmergencyDialogOpen, setEmergencyDialogOpen] = useState(false);
@@ -16,13 +17,16 @@ export function Header() {
           <SidebarTrigger className="md:hidden" />
           {/* Page title could go here */}
         </div>
-        <Button
-          variant="destructive"
-          onClick={() => setEmergencyDialogOpen(true)}
-        >
-          <Phone className="mr-2 h-4 w-4" />
-          Emergency Support
-        </Button>
+        <div className="flex items-center gap-4">
+          <LanguageSwitcher />
+          <Button
+            variant="destructive"
+            onClick={() => setEmergencyDialogOpen(true)}
+          >
+            <Phone className="mr-2 h-4 w-4" />
+            Emergency Support
+          </Button>
+        </div>
       </header>
       <EmergencyDialog
         open={isEmergencyDialogOpen}
