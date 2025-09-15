@@ -35,7 +35,8 @@ export default function LoginPage() {
         title: 'Login Successful',
         description: 'Welcome back!',
       });
-      router.replace('/');
+      // Force a full page reload to ensure middleware has fresh cookie
+      window.location.href = '/'; 
     } catch (error: any) {
       console.error(error);
       let errorMessage = 'An unknown error occurred. Please try again.';
