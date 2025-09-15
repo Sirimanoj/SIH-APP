@@ -12,19 +12,20 @@ import { Languages } from 'lucide-react';
 import { useLocale } from 'next-intl';
 import { useRouter, usePathname } from 'next/navigation';
 import { useTransition } from 'react';
-import { useChangeLocale } from 'next-intl/client';
-
 
 export default function LanguageSwitcher() {
   const router = useRouter();
   const pathname = usePathname();
   const locale = useLocale();
   const [isPending, startTransition] = useTransition();
-  const changeLocale = useChangeLocale();
 
   const handleLocaleChange = (nextLocale: string) => {
+    // In Next.js 13+ App Router with next-intl, we can use the router to switch locales.
+    // We'll construct the new path with the new locale.
+    const newPath = pathname.replace(`/${locale}`, `/${nextLocale}`);
+    
     startTransition(() => {
-      changeLocale(nextLocale as any);
+      router.replace(newPath);
     });
   };
 
