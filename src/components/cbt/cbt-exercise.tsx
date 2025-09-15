@@ -11,7 +11,8 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
-import { cbtGuidedExercise, CbtGuidedExerciseOutput } from '@/app/actions';
+import { cbtGuidedExercise } from '@/app/actions';
+import { type CbtGuidedExerciseOutput } from '@/ai/flows/cbt-guided-exercise';
 import { ArrowRight, BrainCircuit, Lightbulb, Loader, Sparkles } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 
