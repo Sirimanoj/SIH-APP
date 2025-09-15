@@ -16,18 +16,7 @@ import {
   ChartContainer,
   ChartTooltip,
 } from '@/components/ui/chart';
-import { db } from '@/lib/firebase';
-import {
-  collection,
-  addDoc,
-  serverTimestamp,
-  query,
-  where,
-  orderBy,
-  onSnapshot,
-  Timestamp,
-} from 'firebase/firestore';
-import { format, subDays, startOfDay } from 'date-fns';
+import { format, subDays } from 'date-fns';
 
 const moods = [
   { level: 1, icon: Annoyed, label: 'Awful', color: 'text-red-500' },
@@ -44,71 +33,38 @@ const chartConfig = {
   },
 };
 
-// Mock user since auth is disabled
-const mockUser = { uid: 'mock-user-id' };
+const generateMockData = () => {
+  const today = new Date();
+  return Array.from({ length: 7 })
+    .map((_, i) => {
+      const date = subDays(today, i);
+      const day = format(date, 'MMM d');
+      return {
+        day: day,
+        mood: i === 0 ? 0 : Math.floor(Math.random() * 5) + 1, // No entry for today initially
+      };
+    })
+    .reverse();
+};
 
 export default function MoodTracker() {
-  const user = mockUser;
   const [selectedMood, setSelectedMood] = useState<number | null>(null);
   const [moodData, setMoodData] = useState<{ day: string; mood: number }[]>([]);
 
   useEffect(() => {
-    if (!user) return;
-
-    const today = new Date();
-    const startDate = startOfDay(subDays(today, 6));
-
-    const moodQuery = query(
-      collection(db, 'moods'),
-      where('userId', '==', user.uid),
-      where('timestamp', '>=', startDate),
-      orderBy('timestamp', 'desc')
-    );
-
-    const unsubscribe = onSnapshot(moodQuery, (querySnapshot) => {
-      const dailyMoods = new Map<string, { moodLevel: number; timestamp: Date }>();
-
-      querySnapshot.forEach((doc) => {
-        const data = doc.data();
-        if (data.timestamp) {
-          const date = (data.timestamp as Timestamp).toDate();
-          const day = format(date, 'MMM d');
-
-          // Only store the latest mood for each day
-          if (!dailyMoods.has(day) || date > dailyMoods.get(day)!.timestamp) {
-            dailyMoods.set(day, { moodLevel: data.moodLevel, timestamp: date });
-          }
-        }
-      });
-
-      const lastSevenDaysData = Array.from({ length: 7 })
-        .map((_, i) => {
-          const date = subDays(today, i);
-          const day = format(date, 'MMM d');
-          return {
-            day: day,
-            mood: dailyMoods.get(day)?.moodLevel || 0,
-          };
-        })
-        .reverse();
-
-      setMoodData(lastSevenDaysData);
-
-      const todayStr = format(today, 'MMM d');
-      const todayMood = dailyMoods.get(todayStr);
-
-      if (todayMood) {
-        setSelectedMood(todayMood.moodLevel);
-      } else {
-        setSelectedMood(null);
-      }
-    });
-
-    return () => unsubscribe();
-  }, [user]);
+    // Initialize with mock data as we are not using Firebase for now
+    const mockData = generateMockData();
+    setMoodData(mockData);
+    
+    // See if today's mood is already set in the mock data (it won't be, initially)
+    const todayStr = format(new Date(), 'MMM d');
+    const todayMood = mockData.find(d => d.day === todayStr)?.mood;
+    if (todayMood && todayMood > 0) {
+      setSelectedMood(todayMood);
+    }
+  }, []);
 
   const handleMoodSelection = async (moodLevel: number) => {
-    if (!user) return;
     setSelectedMood(moodLevel);
 
     // Optimistically update UI
@@ -116,17 +72,8 @@ export default function MoodTracker() {
     setMoodData((prevData) =>
       prevData.map((d) => (d.day === todayStr ? { ...d, mood: moodLevel } : d))
     );
-
-    try {
-      await addDoc(collection(db, 'moods'), {
-        userId: user.uid,
-        moodLevel: moodLevel,
-        timestamp: serverTimestamp(),
-      });
-    } catch (error) {
-      console.error('Error adding document: ', error);
-      // Revert optimistic update on error if needed
-    }
+    // In a real app with backend, you would save this to the database.
+    // Since we disabled auth, we are just updating local state.
   };
 
   return (
