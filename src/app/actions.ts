@@ -1,3 +1,4 @@
+
 'use server';
 
 import { detectCrisis } from '@/ai/flows/chatbot-crisis-detection';
@@ -23,6 +24,8 @@ export async function handleChatMessage(message: string, conversationHistory: st
     }
     
     // 2. Determine user intent
+
+    // Intent: Guided Exercise (Breathing, Mindfulness)
     if (message.toLowerCase().match(/exercise|breathing|mindfulness|meditation/)) {
       const exerciseResult = await getGuidedExercise({ topic: message });
       return {
@@ -31,6 +34,7 @@ export async function handleChatMessage(message: string, conversationHistory: st
       };
     }
 
+    // Intent: Resource Recommendation
     if (message.toLowerCase().match(/resources|help|articles|videos|support/)) {
        const resourceResult = await chatbotResourceRecommendation({ conversationHistory: fullConversation, userConcerns: message });
        const recommendations = resourceResult.recommendedResources.join('\n- ');
@@ -38,6 +42,39 @@ export async function handleChatMessage(message: string, conversationHistory: st
          response: `Based on our conversation, here are some resources that might be helpful:\n- ${recommendations}\n\n${resourceResult.reasoning}`,
          isCrisis: false,
        }
+    }
+
+    // Intent: CBT for a Negative Thought
+    // This is a simple heuristic. A more advanced implementation could use a dedicated intent detection model.
+    if (message.toLowerCase().match(/i feel like|i am|i'm such a|i always|i never/)) {
+        const cbtResult = await cbtGuidedExercise({ negativeThought: message });
+        
+        const distortions = cbtResult.cognitiveDistortions.map(d => `*${d.name}:* ${d.description}`).join('\n');
+        const questions = cbtResult.socraticQuestions.map(q => `- ${q}`).join('\n');
+
+        const response = `It sounds like you're being really hard on yourself. Let's look at that thought more closely using a CBT technique.
+
+**Your Thought:**
+_"${message}"_
+
+**Possible Cognitive Distortions:**
+I noticed a few common unhelpful thinking patterns. Do any of these feel true?
+${distortions}
+
+**Challenge the Thought:**
+To get a clearer perspective, ask yourself:
+${questions}
+
+**A More Balanced Reframe:**
+Consider this alternative perspective:
+_"${cbtResult.reframedThought}"_
+
+This is just an exercise, not a judgment. The goal is to notice the thought, not just automatically believe it.`;
+
+        return {
+            response,
+            isCrisis: false,
+        };
     }
     
     // 3. If no specific intent, have a natural conversation
