@@ -38,9 +38,15 @@ export default function LoginPage() {
       router.push('/');
     } catch (error: any) {
       console.error(error);
+      let errorMessage = 'An unknown error occurred. Please try again.';
+      if (error.code === 'auth/invalid-credential' || error.code === 'auth/wrong-password' || error.code === 'auth/user-not-found') {
+        errorMessage = 'Invalid email or password. Please check your credentials and try again.';
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
       toast({
         title: 'Login Failed',
-        description: error.message || 'Please check your credentials and try again.',
+        description: errorMessage,
         variant: 'destructive',
       });
     } finally {
