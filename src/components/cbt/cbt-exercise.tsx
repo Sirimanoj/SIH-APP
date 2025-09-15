@@ -103,7 +103,7 @@ export default function CbtExercise() {
                 <CardDescription className="pt-2">{t('distortionsDescription')}</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
-                {analysis.cognitiveDistortions.map((distortion, index) => (
+                {analysis.cognitiveDistortions.map((distortion: { name: string; description: string }, index: number) => (
                   <div key={index} className="rounded-lg border bg-secondary/50 p-4">
                     <p className="font-semibold">{distortion.name}</p>
                     <p className="text-sm text-muted-foreground">{distortion.description}</p>
@@ -124,7 +124,7 @@ export default function CbtExercise() {
               </CardHeader>
               <CardContent>
                 <ul className="list-disc space-y-2 pl-5">
-                  {analysis.socraticQuestions.map((q, index) => (
+                  {analysis.socraticQuestions.map((q: string, index: number) => (
                     <li key={index}>{q}</li>
                   ))}
                 </ul>
