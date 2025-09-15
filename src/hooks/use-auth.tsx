@@ -46,16 +46,16 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setUser(user);
       setLoading(false);
       
+      const isAuthPage = pathname.startsWith('/login') || pathname.startsWith('/register');
+
       if (user) {
         const token = await getIdToken(user);
         setCookie('firebase-auth-token', token, 1);
-        const isAuthPage = pathname.startsWith('/login') || pathname.startsWith('/register');
         if (isAuthPage) {
           router.replace('/');
         }
       } else {
         eraseCookie('firebase-auth-token');
-        const isAuthPage = pathname.startsWith('/login') || pathname.startsWith('/register');
         if (!isAuthPage) {
             router.replace('/login');
         }
@@ -108,7 +108,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
   
   const logout = () => {
-    return signOut(auth);
+    signOut(auth);
+    // After sign-out, explicitly navigate to the login page.
+    router.push('/login');
   };
 
   const value = {
@@ -119,6 +121,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     logout,
   };
 
+  // Render children only when loading is complete to avoid flashes of incorrect content.
   return <AuthContext.Provider value={value}>{!loading && children}</AuthContext.Provider>;
 };
 

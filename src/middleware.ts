@@ -7,12 +7,10 @@ export function middleware(request: NextRequest) {
 
   const isAuthPage = pathname.startsWith('/login') || pathname.startsWith('/register');
   
+  // If there's no auth token and the user is trying to access a protected page,
+  // redirect them to the login page.
   if (!cookie && !isAuthPage) {
     return NextResponse.redirect(new URL('/login', request.url));
-  }
-
-  if (cookie && isAuthPage) {
-    return NextResponse.redirect(new URL('/', request.url));
   }
 
   return NextResponse.next();
