@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { useState } from 'react';
@@ -6,9 +7,11 @@ import { Button } from '@/components/ui/button';
 import { SidebarTrigger } from '@/components/ui/sidebar';
 import EmergencyDialog from '@/components/emergency-dialog';
 import LanguageSwitcher from './language-switcher';
+import { useTranslations } from 'next-intl';
 
 export function Header() {
   const [isEmergencyDialogOpen, setEmergencyDialogOpen] = useState(false);
+  const t = useTranslations('Header');
 
   return (
     <>
@@ -24,7 +27,7 @@ export function Header() {
             onClick={() => setEmergencyDialogOpen(true)}
           >
             <Phone className="mr-2 h-4 w-4" />
-            Emergency Support
+            {t('emergencySupport')}
           </Button>
         </div>
       </header>

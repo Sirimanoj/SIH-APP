@@ -1,3 +1,4 @@
+
 'use client';
 
 import React from 'react';
@@ -14,6 +15,7 @@ import {
 } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
+import { useTranslations } from 'next-intl';
 
 const posts = [
   {
@@ -43,33 +45,35 @@ const posts = [
 ];
 
 export default function CommunityPage() {
+  const t = useTranslations('Community');
+
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="font-headline text-3xl font-bold tracking-tight">Community Forum</h1>
+        <h1 className="font-headline text-3xl font-bold tracking-tight">{t('title')}</h1>
         <p className="text-muted-foreground">
-          Share your thoughts and connect with peers. You are anonymous here.
+          {t('description')}
         </p>
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle className="font-headline text-lg">Create a new post</CardTitle>
-          <CardDescription>Share what's on your mind. Your post is anonymous.</CardDescription>
+          <CardTitle className="font-headline text-lg">{t('newPostTitle')}</CardTitle>
+          <CardDescription>{t('newPostDescription')}</CardDescription>
         </CardHeader>
         <CardContent>
-          <Textarea placeholder="What would you like to share?" />
+          <Textarea placeholder={t('newPostPlaceholder')} />
         </CardContent>
         <CardFooter className="flex justify-end">
           <Button>
             <Send className="mr-2 h-4 w-4" />
-            Post
+            {t('postButton')}
           </Button>
         </CardFooter>
       </Card>
       
       <div className="space-y-6">
-        <h2 className="font-headline text-2xl font-semibold">Recent Discussions</h2>
+        <h2 className="font-headline text-2xl font-semibold">{t('recentDiscussions')}</h2>
         {posts.map((post) => (
           <Card key={post.id} className="w-full">
             <CardHeader>
@@ -95,7 +99,7 @@ export default function CommunityPage() {
               </Button>
               <Button variant="ghost" size="sm" className="flex items-center gap-1">
                 <MessageSquare className="h-4 w-4" />
-                <span>{post.replies} Replies</span>
+                <span>{post.replies} {t('replies')}</span>
               </Button>
             </CardFooter>
           </Card>

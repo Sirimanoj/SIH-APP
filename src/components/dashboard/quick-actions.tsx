@@ -1,3 +1,4 @@
+
 'use client';
 
 import React from 'react';
@@ -9,43 +10,46 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-
-const actions = [
-  {
-    href: '/chatbot',
-    icon: Bot,
-    title: 'Mitra',
-    description: "Talk about what's on your mind.",
-    color: 'bg-primary/10 text-primary',
-  },
-  {
-    href: '/resources',
-    icon: BookOpen,
-    title: 'Resources',
-    description: 'Explore articles and guides.',
-    color: 'bg-accent/20 text-green-600',
-  },
-  {
-    href: '/community',
-    icon: Users,
-    title: 'Community',
-    description: 'Connect with your peers.',
-    color: 'bg-orange-100 text-orange-600',
-  },
-  {
-    href: '/book-session',
-    icon: CalendarCheck,
-    title: 'Book a Session',
-    description: 'Schedule a confidential appointment.',
-    color: 'bg-blue-100 text-blue-600',
-  },
-];
+import { useTranslations } from 'next-intl';
 
 export default function QuickActions() {
+  const t = useTranslations('QuickActions');
+
+  const actions = [
+    {
+      href: '/chatbot',
+      icon: Bot,
+      title: t('mitraTitle'),
+      description: t('mitraDescription'),
+      color: 'bg-primary/10 text-primary',
+    },
+    {
+      href: '/resources',
+      icon: BookOpen,
+      title: t('resourcesTitle'),
+      description: t('resourcesDescription'),
+      color: 'bg-accent/20 text-green-600',
+    },
+    {
+      href: '/community',
+      icon: Users,
+      title: t('communityTitle'),
+      description: t('communityDescription'),
+      color: 'bg-orange-100 text-orange-600',
+    },
+    {
+      href: '/book-session',
+      icon: CalendarCheck,
+      title: t('bookSessionTitle'),
+      description: t('bookSessionDescription'),
+      color: 'bg-blue-100 text-blue-600',
+    },
+  ];
+
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="font-headline">Quick Actions</CardTitle>
+        <CardTitle className="font-headline">{t('title')}</CardTitle>
       </CardHeader>
       <CardContent className="flex flex-col gap-4">
         {actions.map((action) => (

@@ -1,6 +1,97 @@
+
 {
   "Dashboard": {
     "welcome": "वापसी पर स्वागत है, विद्यार्थी!",
     "subtitle": "आपकी मानसिक स्वास्थ्य यात्रा यहाँ जारी है।"
+  },
+  "MoodTracker": {
+    "title": "आज आप कैसा महसूस कर रहे हैं?",
+    "description": "अपने भावनात्मक पैटर्न को समझने के लिए अपने मूड को ट्रैक करें।",
+    "thisWeek": "इस सप्ताह का मूड",
+    "awful": "बहुत बुरा",
+    "bad": "बुरा",
+    "okay": "ठीक है",
+    "good": "अच्छा",
+    "great": "बहुत अच्छा",
+    "noEntry": "कोई प्रविष्टि नहीं"
+  },
+  "QuickActions": {
+    "title": "त्वरित क्रियाएं",
+    "mitraTitle": "मित्र",
+    "mitraDescription": "आपके मन में जो है उसके बारे में बात करें।",
+    "resourcesTitle": "संसाधन",
+    "resourcesDescription": "लेख और गाइड देखें।",
+    "communityTitle": "समुदाय",
+    "communityDescription": "अपने साथियों से जुड़ें।",
+    "bookSessionTitle": "सत्र बुक करें",
+    "bookSessionDescription": "एक गोपनीय अपॉइंटमेंट शेड्यूल करें।"
+  },
+  "DailyTip": {
+    "title": "दैनिक कल्याण टिप",
+    "getAnotherTip": "एक और टिप प्राप्त करें"
+  },
+  "Sidebar": {
+    "dashboard": "डैशबोर्ड",
+    "mitra": "मित्र",
+    "resources": "संसाधन",
+    "community": "समुदाय",
+    "bookSession": "सत्र बुक करें",
+    "profile": "प्रोफ़ाइल"
+  },
+  "Header": {
+    "emergencySupport": "आपातकालीन सहायता"
+  },
+  "Chatbot": {
+    "initialMessage": "नमस्ते! मैं आपका मनमित्र सहायक हूँ। आज आप कैसा महसूस कर रहे हैं? आप मुझसे अपने मन की किसी भी बात के बारे में बात कर सकते हैं।",
+    "quickReplyAnxious": "मुझे घबराहट हो रही है।",
+    "quickReplyTalk": "मुझे किसी से बात करनी है।",
+    "quickReplyBreathing": "मुझे एक साँस लेने का व्यायाम दें।",
+    "quickReplySleep": "मुझे सोने में परेशानी हो रही है।",
+    "placeholder": "अपना संदेश टाइप करें...",
+    "disclaimer": "यह एक एआई सहायक है। आपात स्थिति के लिए, कृपया आपातकालीन सहायता बटन का उपयोग करें।"
+  },
+  "BookSession": {
+    "title": "एक गोपनीय सत्र बुक करें",
+    "description": "एक परिसर परामर्शदाता के साथ एक निजी अपॉइंटमेंट शेड्यूल करें।",
+    "cardTitle": "अपना अपॉइंटमेंट शेड्यूल करें",
+    "cardDescription": "आपके लिए उपयुक्त तारीख और समय चुनें। सभी सत्र गोपनीय हैं।",
+    "availableSlots": "के लिए उपलब्ध समय स्लॉट",
+    "confirmBooking": "अपनी बुकिंग की पुष्टि करें",
+    "date": "तारीख",
+    "time": "समय",
+    "reasonPlaceholder": "मिलने का कारण (वैकल्पिक, गोपनीय)",
+    "bookAppointment": "अपॉइंटमेंट बुक करें",
+    "incompleteSelection": "अधूरा चयन",
+    "incompleteSelectionDesc": "अपना सत्र बुक करने के लिए कृपया एक तारीख और एक समय स्लॉट चुनें।",
+    "bookingConfirmed": "बुकिंग की पुष्टि हो गई!",
+    "bookingConfirmedDesc": "आपका सत्र {date} को {time} बजे के लिए बुक हो गया है। आपको जल्द ही एक पुष्टिकरण ईमेल प्राप्त होगा।"
+  },
+  "Community": {
+    "title": "सामुदायिक मंच",
+    "description": "अपने विचार साझा करें और साथियों से जुड़ें। आप यहां गुमनाम हैं।",
+    "newPostTitle": "एक नई पोस्ट बनाएं",
+    "newPostDescription": "आपके मन में जो है उसे साझा करें। आपकी पोस्ट गुमनाम है।",
+    "newPostPlaceholder": "आप क्या साझा करना चाहेंगे?",
+    "postButton": "पोस्ट",
+    "recentDiscussions": "हाल की चर्चाएँ",
+    "replies": "उत्तर"
+  },
+  "Profile": {
+    "title": "आपकी प्रोफ़ाइल",
+    "description": "अपने खाते और व्यक्तिगत जानकारी का प्रबंधन करें।",
+    "personalInfo": "व्यक्तिगत जानकारी",
+    "displayName": "प्रदर्शित नाम",
+    "emailAddress": "ईमेल पता",
+    "updateProfile": "प्रोफ़ाइल अपडेट करें",
+    "dangerZone": "खतरा क्षेत्र",
+    "logOut": "लॉग आउट",
+    "logOutDescription": "एप्लिकेशन से लॉग आउट करने का अनुकरण करें।"
+  },
+  "Resources": {
+    "title": "संसाधन पुस्तकालय",
+    "description": "आपके मानसिक कल्याण के लिए क्यूरेटेड लेख, वीडियो और ऑडियो गाइड देखें।",
+    "articles": "लेख",
+    "videos": "वीडियो",
+    "audio": "ऑडियो"
   }
 }

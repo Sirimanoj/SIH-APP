@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { useState } from 'react';
@@ -15,6 +16,7 @@ import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 import { Clock } from 'lucide-react';
 import { add } from 'date-fns';
+import { useTranslations } from 'next-intl';
 
 const availableTimeSlots = [
   '09:00 AM',
@@ -29,25 +31,26 @@ export default function BookSessionPage() {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
   const { toast } = useToast();
+  const t = useTranslations('BookSession');
 
   const handleBooking = () => {
     if (!selectedDate || !selectedTime) {
       toast({
-        title: 'Incomplete Selection',
-        description: 'Please select a date and a time slot to book your session.',
+        title: t('incompleteSelection'),
+        description: t('incompleteSelectionDesc'),
         variant: 'destructive',
       });
       return;
     }
 
-    // In a real application, you would handle the booking logic here,
-    // like calling an API to save the appointment.
     toast({
-      title: 'Booking Confirmed!',
-      description: `Your session is booked for ${selectedDate.toLocaleDateString()} at ${selectedTime}. You will receive a confirmation email shortly.`,
+      title: t('bookingConfirmed'),
+      description: t('bookingConfirmedDesc', {
+        date: selectedDate.toLocaleDateString(),
+        time: selectedTime,
+      }),
     });
 
-    // Reset selection after booking
     setSelectedTime(null);
   };
 
@@ -55,18 +58,18 @@ export default function BookSessionPage() {
     <div className="space-y-8">
       <div>
         <h1 className="font-headline text-3xl font-bold tracking-tight">
-          Book a Confidential Session
+          {t('title')}
         </h1>
         <p className="text-muted-foreground">
-          Schedule a private appointment with a campus counselor.
+          {t('description')}
         </p>
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle>Schedule Your Appointment</CardTitle>
+          <CardTitle>{t('cardTitle')}</CardTitle>
           <CardDescription>
-            Select a date and time that works for you. All sessions are confidential.
+            {t('cardDescription')}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -83,7 +86,7 @@ export default function BookSessionPage() {
             <div className="space-y-6">
               <div>
                 <h3 className="mb-4 font-headline text-lg font-semibold">
-                  Available Time Slots for {selectedDate?.toLocaleDateString()}
+                  {t('availableSlots')} {selectedDate?.toLocaleDateString()}
                 </h3>
                 <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
                   {availableTimeSlots.map((time) => (
@@ -102,16 +105,16 @@ export default function BookSessionPage() {
               
               {selectedTime && (
                 <div className="space-y-4 rounded-lg border bg-secondary/50 p-4">
-                  <h3 className="font-headline text-lg font-semibold">Confirm Your Booking</h3>
+                  <h3 className="font-headline text-lg font-semibold">{t('confirmBooking')}</h3>
                    <div className="text-sm">
-                    <p><strong>Date:</strong> {selectedDate?.toLocaleDateString()}</p>
-                    <p><strong>Time:</strong> {selectedTime}</p>
+                    <p><strong>{t('date')}:</strong> {selectedDate?.toLocaleDateString()}</p>
+                    <p><strong>{t('time')}:</strong> {selectedTime}</p>
                   </div>
                   <Textarea
-                    placeholder="Reason for visit (optional, confidential)"
+                    placeholder={t('reasonPlaceholder')}
                   />
                   <Button onClick={handleBooking} className="w-full">
-                    Book Appointment
+                    {t('bookAppointment')}
                   </Button>
                 </div>
               )}

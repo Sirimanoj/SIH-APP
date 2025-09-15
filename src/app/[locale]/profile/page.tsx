@@ -14,6 +14,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { User } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 
 const user = {
   displayName: 'Student',
@@ -22,6 +23,7 @@ const user = {
 };
 
 export default function ProfilePage() {
+  const t = useTranslations('Profile');
 
   const handleLogout = () => {
     // Since auth is disabled, we can just navigate to a "logged out" state if one exists
@@ -33,9 +35,9 @@ export default function ProfilePage() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="font-headline text-3xl font-bold tracking-tight">Your Profile</h1>
+        <h1 className="font-headline text-3xl font-bold tracking-tight">{t('title')}</h1>
         <p className="text-muted-foreground">
-          Manage your account and personal information.
+          {t('description')}
         </p>
       </div>
 
@@ -56,28 +58,28 @@ export default function ProfilePage() {
         </CardHeader>
         <CardContent className="space-y-6">
             <div className="space-y-4">
-                <h3 className="font-headline text-lg font-semibold">Personal Information</h3>
+                <h3 className="font-headline text-lg font-semibold">{t('personalInfo')}</h3>
                 <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                     <div className="space-y-2">
-                        <Label htmlFor="displayName">Display Name</Label>
+                        <Label htmlFor="displayName">{t('displayName')}</Label>
                         <Input id="displayName" defaultValue={user.displayName || ''} />
                     </div>
                     <div className="space-y-2">
-                        <Label htmlFor="email">Email Address</Label>
+                        <Label htmlFor="email">{t('emailAddress')}</Label>
                         <Input id="email" defaultValue={user.email || ''} disabled />
                     </div>
                 </div>
-                 <Button>Update Profile</Button>
+                 <Button>{t('updateProfile')}</Button>
             </div>
             
             <div className="space-y-4 rounded-lg border border-destructive p-4">
-                <h3 className="font-headline text-lg font-semibold text-destructive">Danger Zone</h3>
+                <h3 className="font-headline text-lg font-semibold text-destructive">{t('dangerZone')}</h3>
                 <div className='flex items-center justify-between'>
                     <div>
-                        <p className="font-medium">Log Out</p>
-                        <p className="text-sm text-muted-foreground">Simulate logging out of the application.</p>
+                        <p className="font-medium">{t('logOut')}</p>
+                        <p className="text-sm text-muted-foreground">{t('logOutDescription')}</p>
                     </div>
-                    <Button variant="destructive" onClick={handleLogout}>Log Out</Button>
+                    <Button variant="destructive" onClick={handleLogout}>{t('logOut')}</Button>
                 </div>
             </div>
         </CardContent>

@@ -16,17 +16,19 @@ import {
   SidebarSeparator,
 } from '@/components/ui/sidebar';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-
-const menuItems = [
-  { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-  { href: '/chatbot', label: 'Mitra', icon: Bot },
-  { href: '/resources', label: 'Resources', icon: BookOpen },
-  { href: '/community', label: 'Community', icon: Users },
-  { href: '/book-session', label: 'Book a Session', icon: CalendarCheck },
-];
+import { useTranslations } from 'next-intl';
 
 export function MainNav() {
   const pathname = usePathname();
+  const t = useTranslations('Sidebar');
+
+  const menuItems = [
+    { href: '/dashboard', label: t('dashboard'), icon: LayoutDashboard },
+    { href: '/chatbot', label: t('mitra'), icon: Bot },
+    { href: '/resources', label: t('resources'), icon: BookOpen },
+    { href: '/community', label: t('community'), icon: Users },
+    { href: '/book-session', label: t('bookSession'), icon: CalendarCheck },
+  ];
 
   return (
       <Sidebar>
@@ -44,7 +46,7 @@ export function MainNav() {
               <SidebarMenuItem key={item.href}>
                 <Link href={item.href} passHref>
                   <SidebarMenuButton
-                    isActive={pathname === item.href}
+                    isActive={pathname.endsWith(item.href)}
                     tooltip={item.label}
                   >
                     <item.icon />
@@ -60,13 +62,13 @@ export function MainNav() {
             <SidebarMenu>
                 <SidebarMenuItem>
                     <Link href="/profile" passHref>
-                        <SidebarMenuButton isActive={pathname === '/profile'} tooltip="Profile">
+                        <SidebarMenuButton isActive={pathname.endsWith('/profile')} tooltip={t('profile')}>
                              <Avatar className="h-6 w-6">
                                 <AvatarFallback>
                                     <UserIcon className="h-4 w-4"/>
                                 </AvatarFallback>
                             </Avatar>
-                            <span>Profile</span>
+                            <span>{t('profile')}</span>
                         </SidebarMenuButton>
                     </Link>
                 </SidebarMenuItem>

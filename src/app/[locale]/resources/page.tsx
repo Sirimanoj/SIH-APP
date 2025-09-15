@@ -1,3 +1,4 @@
+
 import Image from 'next/image';
 import {
   Card,
@@ -10,6 +11,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
+import { getTranslations } from 'next-intl/server';
 
 const articles = [
   {
@@ -82,21 +84,22 @@ function ResourceCard({ resource }: { resource: any }) {
   );
 }
 
-export default function ResourcesPage() {
+export default async function ResourcesPage() {
+  const t = await getTranslations('Resources');
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="font-headline text-3xl font-bold tracking-tight">Resource Library</h1>
+        <h1 className="font-headline text-3xl font-bold tracking-tight">{t('title')}</h1>
         <p className="text-muted-foreground">
-          Explore curated articles, videos, and audio guides for your mental well-being.
+          {t('description')}
         </p>
       </div>
 
       <Tabs defaultValue="articles" className="w-full">
         <TabsList>
-          <TabsTrigger value="articles">Articles</TabsTrigger>
-          <TabsTrigger value="videos">Videos</TabsTrigger>
-          <TabsTrigger value="audio">Audio</TabsTrigger>
+          <TabsTrigger value="articles">{t('articles')}</TabsTrigger>
+          <TabsTrigger value="videos">{t('videos')}</TabsTrigger>
+          <TabsTrigger value="audio">{t('audio')}</TabsTrigger>
         </TabsList>
         {(Object.keys(allResources) as ResourceCategory[]).map((category) => (
           <TabsContent key={category} value={category}>

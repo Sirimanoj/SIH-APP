@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { useState, useEffect } from 'react';
@@ -17,14 +18,7 @@ import {
   ChartTooltip,
 } from '@/components/ui/chart';
 import { format, subDays } from 'date-fns';
-
-const moods = [
-  { level: 1, icon: Annoyed, label: 'Awful', color: 'text-red-500' },
-  { level: 2, icon: Frown, label: 'Bad', color: 'text-orange-500' },
-  { level: 3, icon: Meh, label: 'Okay', color: 'text-yellow-500' },
-  { level: 4, icon: Smile, label: 'Good', color: 'text-green-500' },
-  { level: 5, icon: Laugh, label: 'Great', color: 'text-blue-500' },
-];
+import { useTranslations } from 'next-intl';
 
 const chartConfig = {
   mood: {
@@ -50,6 +44,15 @@ const generateMockData = () => {
 export default function MoodTracker() {
   const [selectedMood, setSelectedMood] = useState<number | null>(null);
   const [moodData, setMoodData] = useState<{ day: string; mood: number }[]>([]);
+  const t = useTranslations('MoodTracker');
+
+  const moods = [
+    { level: 1, icon: Annoyed, label: t('awful'), color: 'text-red-500' },
+    { level: 2, icon: Frown, label: t('bad'), color: 'text-orange-500' },
+    { level: 3, icon: Meh, label: t('okay'), color: 'text-yellow-500' },
+    { level: 4, icon: Smile, label: t('good'), color: 'text-green-500' },
+    { level: 5, icon: Laugh, label: t('great'), color: 'text-blue-500' },
+  ];
 
   useEffect(() => {
     // Initialize with mock data as we are not using Firebase for now
@@ -79,9 +82,9 @@ export default function MoodTracker() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="font-headline">How are you feeling today?</CardTitle>
+        <CardTitle className="font-headline">{t('title')}</CardTitle>
         <CardDescription>
-          Track your mood to understand your emotional patterns.
+          {t('description')}
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -106,7 +109,7 @@ export default function MoodTracker() {
         </div>
         <div>
           <h3 className="mb-4 font-headline text-lg font-semibold">
-            This Week's Mood
+            {t('thisWeek')}
           </h3>
           <div className="h-[250px] w-full">
             <ResponsiveContainer width="100%" height="100%">
@@ -131,7 +134,7 @@ export default function MoodTracker() {
                             const moodLabel = moods.find((m) => m.level === moodLevel)?.label;
                             return [`${moodLabel}`, 'Mood'];
                           }
-                          return ['No Entry', ''];
+                          return [t('noEntry'), ''];
                         }}
                         labelFormatter={(label) => format(new Date(label), 'eeee, MMM d')}
                         indicator="dot"

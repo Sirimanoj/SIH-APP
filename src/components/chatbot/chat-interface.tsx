@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
@@ -9,24 +10,27 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { cn } from '@/lib/utils';
 import { handleChatMessage } from '@/app/actions';
 import EmergencyDialog from '@/components/emergency-dialog';
+import { useTranslations } from 'next-intl';
 
 type Message = {
   role: 'user' | 'bot';
   text: string;
 };
 
-const quickReplies = [
-    "I'm feeling anxious.",
-    "I need to talk to someone.",
-    "Give me a breathing exercise.",
-    "I'm having trouble sleeping.",
-];
-
 export default function ChatInterface() {
+  const t = useTranslations('Chatbot');
+  
+  const quickReplies = [
+    t('quickReplyAnxious'),
+    t('quickReplyTalk'),
+    t('quickReplyBreathing'),
+    t('quickReplySleep'),
+  ];
+  
   const [messages, setMessages] = useState<Message[]>([
     {
       role: 'bot',
-      text: "Hello! I'm your MannMitra assistant. How are you feeling today? You can talk to me about anything on your mind.",
+      text: t('initialMessage'),
     },
   ]);
   const [input, setInput] = useState('');
@@ -154,7 +158,7 @@ export default function ChatInterface() {
             <Input
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder="Type your message..."
+              placeholder={t('placeholder')}
               className="pr-12"
               disabled={isTyping}
             />
@@ -168,7 +172,7 @@ export default function ChatInterface() {
             </Button>
           </form>
           <p className="mt-2 text-xs text-muted-foreground flex items-center gap-1">
-            <CircleSlash className="h-3 w-3"/> This is an AI assistant. For emergencies, please use the Emergency Support button.
+            <CircleSlash className="h-3 w-3"/> {t('disclaimer')}
           </p>
         </div>
       </div>

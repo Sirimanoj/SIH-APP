@@ -1,6 +1,97 @@
+
 {
   "Dashboard": {
     "welcome": "Welcome back, Student!",
     "subtitle": "Your mental wellness journey continues here."
+  },
+  "MoodTracker": {
+    "title": "How are you feeling today?",
+    "description": "Track your mood to understand your emotional patterns.",
+    "thisWeek": "This Week's Mood",
+    "awful": "Awful",
+    "bad": "Bad",
+    "okay": "Okay",
+    "good": "Good",
+    "great": "Great",
+    "noEntry": "No Entry"
+  },
+  "QuickActions": {
+    "title": "Quick Actions",
+    "mitraTitle": "Mitra",
+    "mitraDescription": "Talk about what's on your mind.",
+    "resourcesTitle": "Resources",
+    "resourcesDescription": "Explore articles and guides.",
+    "communityTitle": "Community",
+    "communityDescription": "Connect with your peers.",
+    "bookSessionTitle": "Book a Session",
+    "bookSessionDescription": "Schedule a confidential appointment."
+  },
+  "DailyTip": {
+    "title": "Daily Wellness Tip",
+    "getAnotherTip": "Get another tip"
+  },
+  "Sidebar": {
+    "dashboard": "Dashboard",
+    "mitra": "Mitra",
+    "resources": "Resources",
+    "community": "Community",
+    "bookSession": "Book a Session",
+    "profile": "Profile"
+  },
+  "Header": {
+    "emergencySupport": "Emergency Support"
+  },
+  "Chatbot": {
+    "initialMessage": "Hello! I'm your MannMitra assistant. How are you feeling today? You can talk to me about anything on your mind.",
+    "quickReplyAnxious": "I'm feeling anxious.",
+    "quickReplyTalk": "I need to talk to someone.",
+    "quickReplyBreathing": "Give me a breathing exercise.",
+    "quickReplySleep": "I'm having trouble sleeping.",
+    "placeholder": "Type your message...",
+    "disclaimer": "This is an AI assistant. For emergencies, please use the Emergency Support button."
+  },
+  "BookSession": {
+    "title": "Book a Confidential Session",
+    "description": "Schedule a private appointment with a campus counselor.",
+    "cardTitle": "Schedule Your Appointment",
+    "cardDescription": "Select a date and time that works for you. All sessions are confidential.",
+    "availableSlots": "Available Time Slots for",
+    "confirmBooking": "Confirm Your Booking",
+    "date": "Date",
+    "time": "Time",
+    "reasonPlaceholder": "Reason for visit (optional, confidential)",
+    "bookAppointment": "Book Appointment",
+    "incompleteSelection": "Incomplete Selection",
+    "incompleteSelectionDesc": "Please select a date and a time slot to book your session.",
+    "bookingConfirmed": "Booking Confirmed!",
+    "bookingConfirmedDesc": "Your session is booked for {date} at {time}. You will receive a confirmation email shortly."
+  },
+  "Community": {
+    "title": "Community Forum",
+    "description": "Share your thoughts and connect with peers. You are anonymous here.",
+    "newPostTitle": "Create a new post",
+    "newPostDescription": "Share what's on your mind. Your post is anonymous.",
+    "newPostPlaceholder": "What would you like to share?",
+    "postButton": "Post",
+    "recentDiscussions": "Recent Discussions",
+    "replies": "Replies"
+  },
+  "Profile": {
+    "title": "Your Profile",
+    "description": "Manage your account and personal information.",
+    "personalInfo": "Personal Information",
+    "displayName": "Display Name",
+    "emailAddress": "Email Address",
+    "updateProfile": "Update Profile",
+    "dangerZone": "Danger Zone",
+    "logOut": "Log Out",
+    "logOutDescription": "Simulate logging out of the application."
+  },
+  "Resources": {
+    "title": "Resource Library",
+    "description": "Explore curated articles, videos, and audio guides for your mental well-being.",
+    "articles": "Articles",
+    "videos": "Videos",
+    "audio": "Audio"
   }
 }
