@@ -3,8 +3,8 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
-// This page redirects the user from the root of the site (e.g., /)
-// to the main dashboard page for the default locale.
+// This is the root page of the entire application.
+// It redirects the user to the dashboard for the default locale.
 export default function RootPage() {
   const router = useRouter();
 
@@ -12,5 +12,5 @@ export default function RootPage() {
     router.replace('/dashboard');
   }, [router]);
 
-  return null;
+  return null; // Return null as this page is for redirection only
 }

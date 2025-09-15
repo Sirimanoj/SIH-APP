@@ -1,6 +1,5 @@
 import React from 'react';
 import {NextIntlClientProvider, useMessages} from 'next-intl';
-import { notFound } from 'next/navigation';
 import { ClientProviders } from '@/components/layout/client-providers';
 
 export default function AppLayout({ children, params: {locale} }: { children: React.ReactNode, params: {locale: string} }) {

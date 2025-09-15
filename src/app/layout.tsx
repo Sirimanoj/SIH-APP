@@ -7,14 +7,12 @@ export const metadata: Metadata = {
   description: 'A comprehensive digital mental health support system for Indian college students with AI chatbot, counseling booking, resource hub, peer support, and admin analytics',
 };
 
-// This is the root layout. It does not need to know about the locale.
 export default function RootLayout({
-  children
-}: Readonly<{
+  children,
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
-    // The lang attribute will be provided by the [locale] layout
     <html>
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -22,8 +20,8 @@ export default function RootLayout({
         <link href="https://fonts.googleapis.com/css2?family=PT+Sans:ital,wght@0,400;0,700;1,400;1,700&family=Space+Grotesk:wght@300..700&display=swap" rel="stylesheet" />
       </head>
       <body className="font-body antialiased">
-        {children}
-        <Toaster />
+          {children}
+          <Toaster />
       </body>
     </html>
   );
