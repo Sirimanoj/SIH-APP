@@ -35,8 +35,7 @@ export default function LoginPage() {
         title: 'Login Successful',
         description: 'Welcome back!',
       });
-      // Force a full page reload to ensure middleware has fresh cookie
-      window.location.href = '/'; 
+      // The redirection is now handled by the AuthProvider
     } catch (error: any) {
       console.error(error);
       let errorMessage = 'An unknown error occurred. Please try again.';

@@ -2,6 +2,7 @@
 'use client';
 
 import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
+import { useRouter, usePathname } from 'next/navigation';
 import { User, onAuthStateChanged, signOut, createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile, getIdToken, UserCredential } from 'firebase/auth';
 import { auth, db } from '@/lib/firebase';
 import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
@@ -23,39 +24,49 @@ function setCookie(name: string, value: string, days: number) {
         date.setTime(date.getTime() + (days*24*60*60*1000));
         expires = "; expires=" + date.toUTCString();
     }
-    document.cookie = name + "=" + (value || "")  + expires + "; path=/";
+    if (typeof window !== 'undefined') {
+        document.cookie = name + "=" + (value || "")  + expires + "; path=/";
+    }
 }
 
 function eraseCookie(name: string) {   
-    document.cookie = name+'=; Max-Age=-99999999;';  
+    if (typeof window !== 'undefined') {
+        document.cookie = name+'=; Max-Age=-99999999; path=/;';  
+    }
 }
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const router = useRouter();
+  const pathname = usePathname();
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       setUser(user);
+      setLoading(false);
+      
       if (user) {
         const token = await getIdToken(user);
         setCookie('firebase-auth-token', token, 1);
+        const isAuthPage = pathname.startsWith('/login') || pathname.startsWith('/register');
+        if (isAuthPge) {
+          router.replace('/');
+        }
       } else {
         eraseCookie('firebase-auth-token');
+        const isAuthPage = pathname.startsWith('/login') || pathname.startsWith('/register');
+        if (!isAuthPage) {
+            router.replace('/login');
+        }
       }
-      setLoading(false);
     });
 
     return () => unsubscribe();
-  }, []);
+  }, [pathname, router]);
   
   const login = async (email: string, password: string) => {
-    const userCredential = await signInWithEmailAndPassword(auth, email, password);
-    if (userCredential.user) {
-        const token = await getIdToken(userCredential.user);
-        setCookie('firebase-auth-token', token, 1);
-    }
-    return userCredential;
+    return signInWithEmailAndPassword(auth, email, password);
   };
 
   const register = async (email: string, password: string, displayName: string) => {
@@ -64,7 +75,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     await updateProfile(user, { displayName });
 
-    // Create user document in Firestore
     await setDoc(doc(db, "users", user.uid), {
         uid: user.uid,
         email: user.email,
@@ -98,7 +108,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
   
   const logout = () => {
-    eraseCookie('firebase-auth-token');
     return signOut(auth);
   };
 
