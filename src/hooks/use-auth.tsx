@@ -2,15 +2,15 @@
 'use client';
 
 import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
-import { User, onAuthStateChanged, signOut, createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile, getIdToken } from 'firebase/auth';
+import { User, onAuthStateChanged, signOut, createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile, getIdToken, UserCredential } from 'firebase/auth';
 import { auth, db } from '@/lib/firebase';
 import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
 
 interface AuthContextType {
   user: User | null;
   loading: boolean;
-  login: (email: string, password: string) => Promise<any>;
-  register: (email: string, password: string, displayName: string) => Promise<any>;
+  login: (email: string, password: string) => Promise<UserCredential>;
+  register: (email: string, password: string, displayName: string) => Promise<UserCredential>;
   logout: () => Promise<void>;
 }
 
@@ -49,8 +49,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     return () => unsubscribe();
   }, []);
   
-  const login = (email: string, password: string) => {
-    return signInWithEmailAndPassword(auth, email, password);
+  const login = async (email: string, password: string) => {
+    const userCredential = await signInWithEmailAndPassword(auth, email, password);
+    if (userCredential.user) {
+        const token = await getIdToken(userCredential.user);
+        setCookie('firebase-auth-token', token, 1);
+    }
+    return userCredential;
   };
 
   const register = async (email: string, password: string, displayName: string) => {

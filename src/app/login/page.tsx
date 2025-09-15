@@ -35,7 +35,7 @@ export default function LoginPage() {
         title: 'Login Successful',
         description: 'Welcome back!',
       });
-      router.push('/');
+      router.replace('/');
     } catch (error: any) {
       console.error(error);
       let errorMessage = 'An unknown error occurred. Please try again.';
