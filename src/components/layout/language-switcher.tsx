@@ -22,8 +22,8 @@ export default function LanguageSwitcher() {
   const handleLocaleChange = (nextLocale: string) => {
     // This regex will replace the current locale in the path with the new one.
     // It handles cases where the locale might be at the beginning of the path.
-    const newPath = pathname.startsWith(`/${locale}/`) 
-      ? pathname.replace(`/${locale}/`, `/${nextLocale}/`)
+    const newPath = pathname.startsWith(`/${locale}`) 
+      ? `/${nextLocale}${pathname.substring(locale.length + 1)}`
       : `/${nextLocale}${pathname}`;
 
     startTransition(() => {
@@ -42,13 +42,13 @@ export default function LanguageSwitcher() {
       <DropdownMenuContent align="end">
         <DropdownMenuItem
           onClick={() => handleLocaleChange('en')}
-          disabled={locale === 'en'}
+          disabled={locale === 'en' || isPending}
         >
           English
         </DropdownMenuItem>
         <DropdownMenuItem
           onClick={() => handleLocaleChange('hi')}
-          disabled={locale === 'hi'}
+          disabled={locale === 'hi' || isPending}
         >
           हिंदी (Hindi)
         </DropdownMenuItem>
