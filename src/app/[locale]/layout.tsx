@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { ClientProviders } from '@/components/layout/client-providers';
 import {NextIntlClientProvider} from 'next-intl';
@@ -14,10 +13,14 @@ export default async function AppLayout({ children, params: {locale} }: { childr
   }
   
   return (
-      <NextIntlClientProvider locale={locale} messages={messages}>
-        <ClientProviders>
-          {children}
-        </ClientProviders>
-      </NextIntlClientProvider>
+    <html lang={locale}>
+      <body>
+        <NextIntlClientProvider locale={locale} messages={messages}>
+          <ClientProviders>
+            {children}
+          </ClientProviders>
+        </NextIntlClientProvider>
+      </body>
+    </html>
   );
 }
