@@ -108,9 +108,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
   
   const logout = () => {
-    signOut(auth);
-    // After sign-out, explicitly navigate to the login page.
-    router.push('/login');
+    return signOut(auth);
   };
 
   const value = {

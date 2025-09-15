@@ -13,6 +13,13 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL('/login', request.url));
   }
 
+  // If the user is logged in and tries to access an auth page, redirect to home.
+  // Note: This logic is now handled client-side in AuthProvider for better UX,
+  // but we keep a server-side check as a fallback.
+  if (cookie && isAuthPage) {
+    return NextResponse.redirect(new URL('/', request.url));
+  }
+
   return NextResponse.next();
 }
 
