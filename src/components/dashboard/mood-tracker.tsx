@@ -28,7 +28,6 @@ import {
   Timestamp,
 } from 'firebase/firestore';
 import { format, subDays, startOfDay } from 'date-fns';
-import { useAuth } from '@/hooks/use-auth';
 
 const moods = [
   { level: 1, icon: Annoyed, label: 'Awful', color: 'text-red-500' },
@@ -45,8 +44,11 @@ const chartConfig = {
   },
 };
 
+// Mock user since auth is disabled
+const mockUser = { uid: 'mock-user-id' };
+
 export default function MoodTracker() {
-  const { user } = useAuth();
+  const user = mockUser;
   const [selectedMood, setSelectedMood] = useState<number | null>(null);
   const [moodData, setMoodData] = useState<{ day: string; mood: number }[]>([]);
 

@@ -2,23 +2,7 @@
 import { NextResponse, type NextRequest } from 'next/server';
 
 export function middleware(request: NextRequest) {
-  const { pathname } = request.nextUrl;
-  const cookie = request.cookies.get('firebase-auth-token');
-
-  const isAuthPage = pathname.startsWith('/login') || pathname.startsWith('/register');
-  
-  // If there's no auth token and the user is trying to access a protected page,
-  // redirect them to the login page.
-  if (!cookie && !isAuthPage) {
-    return NextResponse.redirect(new URL('/login', request.url));
-  }
-
-  // If there IS a token and the user is on an auth page, allow the AuthProvider to handle redirection.
-  // This avoids a server-side redirect loop.
-  if (cookie && isAuthPage) {
-    return NextResponse.next();
-  }
-
+  // Bypassing all authentication checks for now.
   return NextResponse.next();
 }
 
@@ -30,6 +14,8 @@ export const config = {
      * - _next/static (static files)
      * - _next/image (image optimization files)
      * - favicon.ico (favicon file)
+     *
+     * THIS MATCHER IS EFFECTIVELY DISABLED BY THE EMPTY MIDDLEWARE FUNCTION ABOVE.
      */
     '/((?!api|_next/static|_next/image|favicon.ico).*)',
   ],

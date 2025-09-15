@@ -1,7 +1,6 @@
 'use client';
 
 import React from 'react';
-import { useAuth } from '@/hooks/use-auth';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import {
@@ -16,22 +15,20 @@ import { Label } from '@/components/ui/label';
 import { User } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
+// Mock user data since auth is disabled
+const user = {
+  displayName: 'Student',
+  email: 'student@example.com',
+  photoURL: '',
+};
+
 export default function ProfilePage() {
-  const { user, loading, logout } = useAuth();
   const router = useRouter();
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
-  if (!user) {
-    router.push('/login');
-    return null;
-  }
-
-  const handleLogout = async () => {
-    await logout();
-    router.push('/login');
+  const handleLogout = () => {
+    // Since auth is disabled, we can just navigate to a "logged out" state if one exists
+    // For now, we'll just log to the console.
+    console.log("User logged out (simulation)");
   };
 
   return (
@@ -79,7 +76,7 @@ export default function ProfilePage() {
                 <div className='flex items-center justify-between'>
                     <div>
                         <p className="font-medium">Log Out</p>
-                        <p className="text-sm text-muted-foreground">You will be returned to the login screen.</p>
+                        <p className="text-sm text-muted-foreground">Simulate logging out of the application.</p>
                     </div>
                     <Button variant="destructive" onClick={handleLogout}>Log Out</Button>
                 </div>

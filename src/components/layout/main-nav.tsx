@@ -4,7 +4,6 @@ import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Bot, BookOpen, HeartPulse, LayoutDashboard, Users, CalendarCheck, User as UserIcon, LogOut } from 'lucide-react';
-import { useAuth } from '@/hooks/use-auth';
 import {
   Sidebar,
   SidebarHeader,
@@ -27,7 +26,6 @@ const menuItems = [
 
 export function MainNav() {
   const pathname = usePathname();
-  const { user, logout, loading } = useAuth();
 
   return (
       <Sidebar>
@@ -58,41 +56,20 @@ export function MainNav() {
         </SidebarContent>
         <SidebarSeparator />
         <SidebarFooter>
-            {loading ? (
-                <div className='p-2'></div>
-            ) : user ? (
-                 <SidebarMenu>
-                    <SidebarMenuItem>
-                        <Link href="/profile" passHref>
-                            <SidebarMenuButton isActive={pathname === '/profile'} tooltip="Profile">
-                                <Avatar className="h-6 w-6">
-                                    <AvatarFallback>
-                                        <UserIcon className="h-4 w-4"/>
-                                    </AvatarFallback>
-                                </Avatar>
-                                <span>Profile</span>
-                            </SidebarMenuButton>
-                        </Link>
-                    </SidebarMenuItem>
-                    <SidebarMenuItem>
-                        <SidebarMenuButton onClick={logout} tooltip="Logout">
-                            <LogOut />
-                            <span>Logout</span>
+            <SidebarMenu>
+                <SidebarMenuItem>
+                    <Link href="/profile" passHref>
+                        <SidebarMenuButton isActive={pathname === '/profile'} tooltip="Profile">
+                             <Avatar className="h-6 w-6">
+                                <AvatarFallback>
+                                    <UserIcon className="h-4 w-4"/>
+                                </AvatarFallback>
+                            </Avatar>
+                            <span>Profile</span>
                         </SidebarMenuButton>
-                    </SidebarMenuItem>
-                 </SidebarMenu>
-            ) : (
-                <SidebarMenu>
-                    <SidebarMenuItem>
-                         <Link href="/login" passHref>
-                            <SidebarMenuButton isActive={pathname === '/login'} tooltip="Login">
-                                <UserIcon />
-                                <span>Login</span>
-                            </SidebarMenuButton>
-                        </Link>
-                    </SidebarMenuItem>
-                </SidebarMenu>
-            )}
+                    </Link>
+                </SidebarMenuItem>
+            </SidebarMenu>
         </SidebarFooter>
       </Sidebar>
   );
