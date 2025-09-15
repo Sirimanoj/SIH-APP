@@ -20,10 +20,12 @@ export default function LanguageSwitcher() {
   const [isPending, startTransition] = useTransition();
 
   const handleLocaleChange = (nextLocale: string) => {
-    // In Next.js 13+ App Router with next-intl, we can use the router to switch locales.
-    // We'll construct the new path with the new locale.
-    const newPath = pathname.replace(`/${locale}`, `/${nextLocale}`);
-    
+    // This regex will replace the current locale in the path with the new one.
+    // It handles cases where the locale might be at the beginning of the path.
+    const newPath = pathname.startsWith(`/${locale}/`) 
+      ? pathname.replace(`/${locale}/`, `/${nextLocale}/`)
+      : `/${nextLocale}${pathname}`;
+
     startTransition(() => {
       router.replace(newPath);
     });
