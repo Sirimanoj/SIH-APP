@@ -8,14 +8,12 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({
-  children,
-  params: {locale}
+  children
 }: {
   children: React.ReactNode;
-  params: {locale: string};
 }) {
   return (
-    <html lang={locale}>
+    <html>
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />

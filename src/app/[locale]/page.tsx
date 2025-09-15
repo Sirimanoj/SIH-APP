@@ -1,8 +1,10 @@
-'use client';
-import {redirect} from 'next/navigation';
+import AppLayout from "../(app)/layout";
+import DashboardPage from "../(app)/dashboard/page";
 
-// This page will be responsible for redirecting from a locale root 
-// (e.g., /en) to the dashboard page for that locale.
-export default function LocaleRootPage() {
-  redirect('/dashboard');
+export default function LocaleDashboard() {
+  return (
+    <AppLayout>
+      <DashboardPage />
+    </AppLayout>
+  )
 }
