@@ -36,6 +36,7 @@ export default function LoginPage() {
         description: 'Welcome back!',
       });
       // The redirection is now handled by the AuthProvider
+      window.location.href = '/';
     } catch (error: any) {
       console.error(error);
       let errorMessage = 'An unknown error occurred. Please try again.';
