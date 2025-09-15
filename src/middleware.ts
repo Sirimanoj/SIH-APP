@@ -13,9 +13,10 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL('/login', request.url));
   }
 
-  // If there IS a token and the user is on an auth page, redirect them away.
+  // If there IS a token and the user is on an auth page, allow the AuthProvider to handle redirection.
+  // This avoids a server-side redirect loop.
   if (cookie && isAuthPage) {
-    return NextResponse.redirect(new URL('/', request.url));
+    return NextResponse.next();
   }
 
   return NextResponse.next();
