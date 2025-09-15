@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { useState } from 'react';
@@ -36,11 +37,23 @@ export default function RegisterPage() {
         description: 'Welcome to MannMitra! Please log in.',
       });
       router.push('/login');
-    } catch (error: any) {
+    } catch (error: any)
+      {
       console.error(error);
+      let errorMessage = 'An error occurred. Please try again.';
+      if (error.code === 'auth/email-already-in-use') {
+          errorMessage = 'This email is already in use. Please log in or use a different email.';
+      } else if (error.code === 'auth/weak-password') {
+          errorMessage = 'The password is too weak. It must be at least 6 characters long.';
+      } else if (error.code === 'auth/invalid-email') {
+          errorMessage = 'Please enter a valid email address.';
+      } else if (error.message) {
+          errorMessage = error.message;
+      }
+      
       toast({
         title: 'Registration Failed',
-        description: error.message || 'An error occurred. Please try again.',
+        description: errorMessage,
         variant: 'destructive',
       });
     } finally {

@@ -1,10 +1,11 @@
+
 'use client';
 
 import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
-import { User, onAuthStateChanged, signOut, createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from 'firebase/auth';
+import { User, onAuthStateChanged, signOut, createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile, getIdToken } from 'firebase/auth';
 import { auth, db } from '@/lib/firebase';
 import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
-import { usePathname, useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 
 interface AuthContextType {
   user: User | null;
@@ -16,26 +17,38 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+function setCookie(name: string, value: string, days: number) {
+    let expires = "";
+    if (days) {
+        const date = new Date();
+        date.setTime(date.getTime() + (days*24*60*60*1000));
+        expires = "; expires=" + date.toUTCString();
+    }
+    document.cookie = name + "=" + (value || "")  + expires + "; path=/";
+}
+
+function eraseCookie(name: string) {   
+    document.cookie = name+'=; Max-Age=-99999999;';  
+}
+
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
-  const router = useRouter();
-  const pathname = usePathname();
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
       setUser(user);
-      setLoading(false);
-      
-      const isAuthPage = pathname === '/login' || pathname === '/register';
-
-      if (!user && !isAuthPage) {
-        router.push('/login');
+      if (user) {
+        const token = await getIdToken(user);
+        setCookie('firebase-auth-token', token, 1);
+      } else {
+        eraseCookie('firebase-auth-token');
       }
+      setLoading(false);
     });
 
     return () => unsubscribe();
-  }, [pathname, router]);
+  }, []);
   
   const login = (email: string, password: string) => {
     return signInWithEmailAndPassword(auth, email, password);
@@ -81,6 +94,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
   
   const logout = () => {
+    eraseCookie('firebase-auth-token');
     return signOut(auth);
   };
 
